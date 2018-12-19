@@ -1,0 +1,18 @@
+{
+  "name": "glogfolio",
+  "version": "1.0.0",
+  "description": "Blog and portfolio CMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm start --prefix client\"",
+    "install:root": "npm run install:client && npm run install:server",
+    "install:client": "(cd client && npm install)",
+    "install:server": "(cd server && npm install)"
+  },
+  "author": "Guy Gutman",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  }
+}
