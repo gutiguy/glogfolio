@@ -33,5 +33,5 @@ module.exports = {
     return s3.putObject({ Body, Bucket: AWS_BUCKET, Key, ContentType }, cb);
   },
 
-  s3: s3
+  s3
 };
