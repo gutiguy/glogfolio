@@ -22,6 +22,11 @@ function updateFetchQuery(proxy, mutatedNavigations) {
   });
 }
 
+function updateRelevantQueries(proxy, mutatedNavigations) {
+  updateFetchQuery(proxy, mutatedNavigations);
+  updateInterfaceQuery(proxy, mutatedNavigations);
+}
+
 export const syncDelete = ({ ids }) => proxy => {
   const { navigations } = proxy.readQuery({
     query: FETCH_NAVIGATIONS
@@ -29,8 +34,7 @@ export const syncDelete = ({ ids }) => proxy => {
   const mutatedNavigations = navigations.filter(
     navigation => !ids.includes(navigation.id)
   );
-  updateFetchQuery(proxy, mutatedNavigations);
-  updateInterfaceQuery(proxy, mutatedNavigations);
+  updateRelevantQueries(proxy, mutatedNavigations);
 };
 
 export const syncAdd = ({ addedNavigation }, page) => (proxy, { data }) => {
@@ -44,8 +48,7 @@ export const syncAdd = ({ addedNavigation }, page) => (proxy, { data }) => {
   });
   let mutatedNavigations = [...navigations];
   mutatedNavigations.push({ ...addedNavigation, id, type, __typename });
-  updateFetchQuery(proxy, mutatedNavigations);
-  updateInterfaceQuery(proxy, mutatedNavigations);
+  updateRelevantQueries(proxy, mutatedNavigations);
 };
 
 export const syncEdit = (userInput, page) => proxy => {
@@ -60,13 +63,11 @@ export const syncEdit = (userInput, page) => proxy => {
     ...mutatedNavigations[mutatedIndex],
     ...editedNavigation
   };
-  updateFetchQuery(proxy, mutatedNavigations);
-  updateInterfaceQuery(proxy, mutatedNavigations);
+  updateRelevantQueries(proxy, mutatedNavigations);
 };
 
 export const syncReorder = ({ oldIndex, newIndex }) => proxy => {
   const { navigations } = proxy.readQuery({ query: FETCH_NAVIGATIONS });
   let mutatedNavigations = swapArrayElements(navigations, oldIndex, newIndex);
-  updateFetchQuery(proxy, mutatedNavigations);
-  updateInterfaceQuery(proxy, mutatedNavigations);
+  updateRelevantQueries(proxy, mutatedNavigations);
 };
