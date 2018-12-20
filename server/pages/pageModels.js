@@ -15,7 +15,8 @@ class Page extends Model {
         id: { type: "integer" },
         perma: { type: "string", maxLength: 20 },
         title: { type: "string", minLength: 1, maxLength: 255 },
-        content: { type: "text" }
+        content: { type: "text" },
+        draft: { type: "boolean" }
       }
     };
   }

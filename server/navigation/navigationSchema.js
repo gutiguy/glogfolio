@@ -79,6 +79,24 @@ const typeDef = gql`
   }
 `;
 
+function appendExternals(getOptions) {
+  return getOptions.fullOuterJoin(
+    "navigation_external",
+    "navigation.id",
+    "navigation_external.navigation_id"
+  );
+}
+
+function appendPages(getOptions) {
+  return getOptions
+    .fullOuterJoin(
+      "navigation_page",
+      "navigation.id",
+      "navigation_page.navigation_id"
+    )
+    .leftOuterJoin("page", "navigation_page.page_id", "page.id");
+}
+
 const resolvers = {
   Navigation: {
     __resolveType(obj) {
@@ -212,20 +230,3 @@ const resolvers = {
 };
 
 module.exports = { typeDef, resolvers };
-function appendExternals(getOptions) {
-  return getOptions.fullOuterJoin(
-    "navigation_external",
-    "navigation.id",
-    "navigation_external.navigation_id"
-  );
-}
-
-function appendPages(getOptions) {
-  return getOptions
-    .fullOuterJoin(
-      "navigation_page",
-      "navigation.id",
-      "navigation_page.navigation_id"
-    )
-    .leftOuterJoin("page", "navigation_page.page_id", "page.id");
-}

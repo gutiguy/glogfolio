@@ -1,5 +1,10 @@
 const { Page } = require("./pageModels");
+const { Navigation } = require("../navigation/navigationModels");
 const { gql } = require("apollo-server");
+
+const { transaction } = require("objection");
+
+const knex = Page.knex();
 
 const typeDef = gql`
   type Page {
@@ -7,12 +12,14 @@ const typeDef = gql`
     title: String!
     perma: String!
     content: String!
+    draft: Boolean!
   }
 
   input PageInput {
     title: String!
     perma: String!
     content: String!
+    draft: Boolean
   }
 
   extend type Query {
@@ -25,6 +32,13 @@ const typeDef = gql`
     deletePages(ids: [ID]!): Int!
   }
 `;
+
+function editQuery(id, query, editedPage) {
+  return query
+    .patchAndFetchById(id, editedPage)
+    .then(() => true)
+    .catch(() => false);
+}
 
 const resolvers = {
   Query: {
@@ -43,10 +57,16 @@ const resolvers = {
         .then(data => ({ id: data.id, ...addedPage }));
     },
     async editPage(_, { id, editedPage }) {
-      return Page.query()
-        .patchAndFetchById(id, editedPage)
-        .then(() => true)
-        .catch(() => false);
+      if (editedPage.draft === true) {
+        return transaction(knex, async trx => {
+          await editQuery(id, Page.query(trx), editedPage);
+          return Navigation.query(trx)
+            .from(knex.raw("navigation USING navigation_page"))
+            .delete()
+            .where("navigation_page.page_id", id);
+        });
+      }
+      return editQuery(id, Page.query(), editedPage);
     },
     async deletePages(_, { ids }) {
       return Page.query()

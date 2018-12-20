@@ -7,6 +7,7 @@ import { FormTitle, FormElement, FormRow, Form } from "../Form";
 import { Button } from "@material-ui/core";
 import RichEditor from "../../RichEditor";
 import { Value } from "slate";
+import SingleCheckbox from "../Form/SingleCheckbox";
 
 class APagesForm extends Component {
   constructor(props) {
@@ -98,6 +99,12 @@ class APagesForm extends Component {
                 label="Perma Link:"
                 errorOnTouch
               />
+              <FormElement
+                name="draft"
+                component={SingleCheckbox}
+                label="Draft"
+                id="draft"
+              />
               <RichEditor
                 onChange={this.syncFormWithEditor}
                 value={this.state.richValue}
@@ -129,7 +136,8 @@ APagesForm.defaultProps = {
   initialValues: {
     title: "",
     perma: ""
-  }
+  },
+  draft: false
 };
 
 export default APagesForm;

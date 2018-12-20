@@ -27,6 +27,7 @@ const FETCH_PAGES = gql`
       title
       perma
       content
+      draft
       __typename
     }
   }

@@ -6,6 +6,17 @@ import { swapArrayElements } from "../../../utils/reorder";
 
 function updateInterfaceQuery(proxy, mutatedNavigations) {
   proxy.writeQuery({
+    query: FETCH_NAVIGATIONS_FOR_INTERFACE,
+    data: {
+      navigations: mutatedNavigations.filter(
+        navigation => navigation.shown === true
+      )
+    }
+  });
+}
+
+function updateFetchQuery(proxy, mutatedNavigations) {
+  proxy.writeQuery({
     query: FETCH_NAVIGATIONS,
     data: { navigations: mutatedNavigations }
   });
@@ -18,10 +29,8 @@ export const syncDelete = ({ ids }) => proxy => {
   const mutatedNavigations = navigations.filter(
     navigation => !ids.includes(navigation.id)
   );
-  proxy.writeQuery({
-    query: FETCH_NAVIGATIONS,
-    data: { navigations: mutatedNavigations }
-  });
+  updateFetchQuery(proxy, mutatedNavigations);
+  updateInterfaceQuery(proxy, mutatedNavigations);
 };
 
 export const syncAdd = ({ addedNavigation }, page) => (proxy, { data }) => {
@@ -35,6 +44,7 @@ export const syncAdd = ({ addedNavigation }, page) => (proxy, { data }) => {
   });
   let mutatedNavigations = [...navigations];
   mutatedNavigations.push({ ...addedNavigation, id, type, __typename });
+  updateFetchQuery(proxy, mutatedNavigations);
   updateInterfaceQuery(proxy, mutatedNavigations);
 };
 
@@ -50,30 +60,13 @@ export const syncEdit = (userInput, page) => proxy => {
     ...mutatedNavigations[mutatedIndex],
     ...editedNavigation
   };
-  proxy.writeQuery({
-    query: FETCH_NAVIGATIONS,
-    data: { navigations: mutatedNavigations }
-  });
-  // We also want to sync the UI interface
-  proxy.writeQuery({
-    query: FETCH_NAVIGATIONS_FOR_INTERFACE,
-    data: {
-      navigations: mutatedNavigations.filter(
-        navigation => navigation.shown === true
-      )
-    }
-  });
+  updateFetchQuery(proxy, mutatedNavigations);
+  updateInterfaceQuery(proxy, mutatedNavigations);
 };
 
 export const syncReorder = ({ oldIndex, newIndex }) => proxy => {
   const { navigations } = proxy.readQuery({ query: FETCH_NAVIGATIONS });
   let mutatedNavigations = swapArrayElements(navigations, oldIndex, newIndex);
-  proxy.writeQuery({
-    query: FETCH_NAVIGATIONS,
-    data: { navigations: mutatedNavigations }
-  });
-  proxy.writeQuery({
-    query: FETCH_NAVIGATIONS_FOR_INTERFACE,
-    data: { navigations: mutatedNavigations }
-  });
+  updateFetchQuery(proxy, mutatedNavigations);
+  updateInterfaceQuery(proxy, mutatedNavigations);
 };
