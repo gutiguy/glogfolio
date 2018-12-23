@@ -1,5 +1,6 @@
 const listSchema = require("../list/listSchema");
 const pageSchema = require("../pages/pageSchema");
+const blogSchema = require("../blog/blogSchema");
 const navigationSchema = require("../navigation/navigationSchema");
 const { makeExecutableSchema } = require("graphql-tools");
 const gql = require("graphql-tag");
@@ -19,11 +20,13 @@ module.exports = makeExecutableSchema({
     Base,
     listSchema.typeDef,
     pageSchema.typeDef,
+    blogSchema.typeDef,
     navigationSchema.typeDef
   ],
   resolvers: [
     listSchema.resolvers,
     pageSchema.resolvers,
+    blogSchema.resolvers,
     navigationSchema.resolvers
   ]
 });
