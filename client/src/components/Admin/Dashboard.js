@@ -7,6 +7,8 @@ import ACategories from "./ACategories";
 import ACarousel from "./ACarousel";
 import APages from "./APages";
 import ANavigation from "./ANavigation";
+import ABlog from "./ABlog";
+
 function TabContainer({ children }) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -57,7 +59,9 @@ class Dashboard extends Component {
             <TabContainer>
               <ACategories />
             </TabContainer>
-            <TabContainer>Blog</TabContainer>
+            <TabContainer>
+              <ABlog />
+            </TabContainer>
             <TabContainer>
               <APages />
             </TabContainer>

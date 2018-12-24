@@ -14,12 +14,13 @@ class Post extends Model {
   static get jsonSchema() {
     return {
       type: "object",
-      required: ["title", "content"],
+      required: ["title", "content", "summary"],
       properties: {
         id: { type: "integer" },
         title: { type: "string", maxLength: 255 },
         draft: { type: "boolean" },
-        content: { type: "text" }
+        content: { type: "text" },
+        summary: { type: "string", maxLength: 500 }
       }
     };
   }
@@ -60,7 +61,7 @@ class Tag extends Model {
 
   static get relationMappings() {
     return {
-      tags: {
+      post: {
         relation: Model.ManyToManyRelation,
         modelClass: Post,
         join: {

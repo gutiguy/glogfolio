@@ -20,7 +20,7 @@ const BarContainer = styled.div`
 
 function AToolbar(props) {
   let barElements = [];
-  if (typeof props.numerator !== "undefined") {
+  if (props.numerator) {
     let label = "SELECTED";
     let number = 0;
     if (typeof props.numerator === "object") {
@@ -35,17 +35,17 @@ function AToolbar(props) {
       </Typography>
     );
   }
-  if (typeof props.onAdd !== undefined) {
+  if (props.onDelete) {
     barElements.push(
       <Button onClick={props.onDelete} key="adminToolbarDelete">
-        <Delete>edit_icon</Delete>
+        <Delete />
       </Button>
     );
   }
-  if (typeof props.onDelete !== undefined) {
+  if (props.onAdd) {
     barElements.push(
       <Button onClick={props.onAdd} key="adminToolbarAdd">
-        <Add>add_icon</Add>
+        <Add />
       </Button>
     );
   }

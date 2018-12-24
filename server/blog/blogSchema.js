@@ -15,6 +15,7 @@ const typeDef = gql`
     title: String
     content: String
     draft: Boolean
+    summary: String
     tags: [Tag]
   }
 
@@ -23,6 +24,7 @@ const typeDef = gql`
     content: String
     updated_at: Date
     draft: Boolean
+    summary: String
     tags: [ID]
   }
 
@@ -41,7 +43,7 @@ const typeDef = gql`
   }
 
   extend type Query {
-    posts(ids: [ID], tags: [Int], draft: Boolean): [Post]!
+    posts(ids: [ID], tags: [ID], draft: Boolean): [Post]!
     tags(ids: [ID]): [Tag]!
   }
 
@@ -49,6 +51,11 @@ const typeDef = gql`
     addTags(addedTags: [TagInput]!): [Tag]!
     editTags(editedTags: [TagEditInput]!): [Tag]!
     deleteTags(ids: [ID]): Int!
+    addEditAndDeleteTags(
+      addedTags: [TagInput]
+      editedTags: [TagEditInput]
+      deletedTags: [ID]
+    ): Boolean!
     addPost(addedPost: PostInput!): Post!
     editPost(id: ID!, editedPost: PostInput!): Post!
     deletePost(id: ID!): Int!
@@ -58,6 +65,25 @@ const typeDef = gql`
     tags(ids: [ID]): [Tag]!
   }
 `;
+
+function editTagsQuery(editedTags) {
+  return transaction(knex, async trx => {
+    let updatedTags = editedTags.map(tag =>
+      Tag.query(trx)
+        .patch({ name: tag.name })
+        .where("id", tag.id)
+        .returning("*")
+        .then(data => data[0])
+    );
+    return Promise.all(updatedTags);
+  });
+}
+
+function deleteTagsQuery(ids) {
+  return Tag.query()
+    .delete()
+    .whereIn("id", ids);
+}
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -76,23 +102,42 @@ const resolvers = {
       return null;
     }
   }),
-  Tag: {
-    async tags(post, { ids }) {
-      console.log(post);
+  Post: {
+    async tags(post) {
+      if (post.tags) {
+        return post.tags;
+      }
+      return await Tag.query()
+        .joinRelation("post")
+        .where("post.id", post.id);
     }
   },
   Query: {
-    async posts(_, { ids, draft = "A", tags }) {
-      let getPosts = Post.query().eager("tags");
+    async posts(_, { ids, draft = "A", tags, month, year }) {
+      let getPosts = Post.query().joinRelation("tags");
 
       if (Array.isArray(ids)) {
-        getPosts = getPosts.whereIn("id", ids);
+        getPosts = getPosts.whereIn("post.id", ids);
       }
-      return await getPosts;
+      if (month) {
+        getPosts = getPosts.andWhere(
+          knex.raw("EXTRACT(MONTH from updated_at)"),
+          month
+        );
+      }
+      if (year) {
+        getPosts = getPosts.andWhere(
+          knex.raw("EXTRACT(YEAR FROM updated_at)"),
+          year
+        );
+      }
+      if (Array.isArray(tags)) {
+        getPosts = getPosts.whereIn("tags.id", tags);
+      }
+      return await getPosts.groupBy("post.id").orderBy("post.updated_at");
     },
-    async tags(obj, { ids }) {
+    async tags(_, { ids }) {
       let getTags = Tag.query();
-      console.log("here", obj);
       if (Array.isArray(ids)) {
         getTags = getTags.whereIn("id", ids);
       }
@@ -101,10 +146,14 @@ const resolvers = {
   },
   Mutation: {
     async addPost(_, { addedPost }) {
-      const { title, content, draft = true, tags } = addedPost;
+      const { title, content, draft = true, tags, summary } = addedPost;
       return transaction(knex, async trx => {
-        const post = await Post.query(trx).insert({ title, content, draft });
-        console.log("post", post);
+        const post = await Post.query(trx).insert({
+          title,
+          content,
+          draft,
+          summary
+        });
         if (Array.isArray(tags)) {
           return post
             .$relatedQuery("tags", trx)
@@ -128,9 +177,8 @@ const resolvers = {
           return updatedPost
             .$relatedQuery("tags")
             .relate(editedPost.tags)
-            .then(_ => {
-              console.log(_);
-              return updatedPost;
+            .then(() => {
+              return { ...updatedPost, tags: null };
             });
         }
         return updatedPost;
@@ -145,21 +193,27 @@ const resolvers = {
       return await Tag.query().insert(addedTags);
     },
     async editTags(_, { editedTags }) {
-      return transaction(knex, async trx => {
-        let updatedTags = editedTags.map(tag =>
-          Tag.query(trx)
-            .patch({ name: tag.name })
-            .where("id", tag.id)
-            .returning("*")
-            .then(data => data[0])
-        );
-        return Promise.all(updatedTags);
-      });
+      return editTagsQuery(editedTags);
     },
     async deleteTags(_, { ids }) {
-      return Tag.query()
-        .delete()
-        .whereIn("id", ids);
+      return deleteTagsQuery(ids);
+    },
+    async addEditAndDeleteTags(_, { addedTags, editedTags, deletedTags }) {
+      try {
+        if (addedTags) {
+          await Tag.query().insert(addedTags);
+        }
+        if (editedTags) {
+          await editTagsQuery(editedTags);
+        }
+        if (deletedTags) {
+          await deleteTagsQuery(deletedTags);
+        }
+      } catch (e) {
+        console.log(e);
+        return false;
+      }
+      return true;
     }
   }
 };
