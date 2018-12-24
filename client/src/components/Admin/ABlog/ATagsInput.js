@@ -46,8 +46,10 @@ class ATagsInput extends Component {
           }
           return acc;
         }, [])
-      }
+      },
+      refetchQueries: [{ query: FETCH_TAGS }]
     });
+    this.setState(this.initialState);
   };
 
   handleDelete(id) {

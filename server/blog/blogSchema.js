@@ -114,7 +114,7 @@ const resolvers = {
   },
   Query: {
     async posts(_, { ids, draft = "A", tags, month, year }) {
-      let getPosts = Post.query().joinRelation("tags");
+      let getPosts = Post.query().leftJoinRelation("tags");
 
       if (Array.isArray(ids)) {
         getPosts = getPosts.whereIn("post.id", ids);
