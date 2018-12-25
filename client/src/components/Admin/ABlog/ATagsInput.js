@@ -4,10 +4,9 @@ import { Popover, Grid, Paper, IconButton, Button } from "@material-ui/core";
 import { TextField } from "material-ui-formik-components";
 import SaveIcon from "@material-ui/icons/Save";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { graphql, compose } from "react-apollo";
+import { graphql } from "react-apollo";
 import styled from "styled-components";
 import { FETCH_TAGS, ADD_EDIT_AND_DELETE_TAGS } from "../../../graphql/blog";
-import withLoading from "../../../hoc/withLoading";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { Formik, Form, Field } from "formik";
 
@@ -218,10 +217,10 @@ class ATagsInput extends Component {
   }
 }
 
-export default compose(
-  graphql(FETCH_TAGS, {
-    props: ({ data }) => ({ tags: data.tags, isLoading: data.loading })
-  }),
-  graphql(ADD_EDIT_AND_DELETE_TAGS, { name: "addEditAndDeleteTags" }),
-  withLoading
-)(ATagsInput);
+ATagsInput.defaultProps = {
+  tags: []
+};
+
+export default graphql(ADD_EDIT_AND_DELETE_TAGS, {
+  name: "addEditAndDeleteTags"
+})(ATagsInput);

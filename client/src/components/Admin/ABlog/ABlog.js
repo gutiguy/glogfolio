@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import APosts from "./APosts";
 import BlogSideBar from "./BlogSideBar";
 import { Grid } from "@material-ui/core";
-
+import { debounce } from "debounce";
 import AToolbar from "../AToolbar";
 import APostForm from "./APostForm";
 import {
@@ -10,7 +10,8 @@ import {
   FETCH_POST_DEEP,
   ADD_POST,
   DELETE_POST,
-  EDIT_POST
+  EDIT_POST,
+  FETCH_TAGS
 } from "../../../graphql/blog";
 import { syncAdd, syncDelete } from "./blogMutationSyncs";
 import withLoading from "../../../hoc/withLoading";
@@ -35,19 +36,39 @@ const APostEditForm = compose(
 )(APostForm);
 
 class ABlog extends Component {
-  state = {
-    addForm: false,
-    currentlyEditing: null,
-    selectedTags: null,
-    month: null,
-    year: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      addForm: false,
+      currentlyEditing: null,
+      selectedTags: [],
+      month: null,
+      year: null
+    };
+
+    this.refetchPosts = debounce(this.refetchPosts, 700);
+  }
+
+  refetchPosts = () => {
+    console.log(this.state.selectedTags);
+    this.props.FetchPostsShallow.refetch({
+      tags: this.state.selectedTags
+    });
   };
 
-  addTag = id => {
+  addTag = async id => {
     const { selectedTags } = this.state;
     let mutatedTags = [...selectedTags];
     mutatedTags.push(id);
-    this.setState({ selectedTags: mutatedTags });
+    await this.setState({ selectedTags: mutatedTags });
+    this.refetchPosts();
+  };
+
+  removeTag = async id => {
+    await this.setState(prevState => ({
+      selectedTags: prevState.selectedTags.filter(tag => tag !== id)
+    }));
+    this.refetchPosts();
   };
 
   submitAdd = input => {
@@ -61,7 +82,7 @@ class ABlog extends Component {
 
   submitEdit = async input => {
     const { id, tags, ...editedPost } = input;
-    const res = await this.props.editPost({
+    await this.props.editPost({
       variables: {
         id,
         editedPost: {
@@ -70,12 +91,17 @@ class ABlog extends Component {
         }
       }
     });
-    console.log("res", res);
+    this.setState({ currentlyEditing: null });
   };
 
+  componentDidMount() {
+    console.log("mounting");
+  }
   render() {
     const { addForm, currentlyEditing, selectedTags, month, year } = this.state;
-    const { posts } = this.props;
+    let { posts } = this.props.FetchPostsShallow;
+    const { tags } = this.props.FetchTags;
+
     if (addForm) {
       return (
         <APostForm
@@ -102,7 +128,7 @@ class ABlog extends Component {
           onDelete={this.onDelete}
           onAdd={() => this.setState({ addForm: true })}
         >
-          <ATagsInput />
+          <ATagsInput tags={tags} />
         </AToolbar>
         <Grid container spacing={24}>
           <Grid item xs={8}>
@@ -116,7 +142,12 @@ class ABlog extends Component {
             />
           </Grid>
           <Grid item xs={4}>
-            <BlogSideBar />
+            <BlogSideBar
+              tags={tags}
+              selectedTags={selectedTags}
+              onAddTag={this.addTag}
+              onDeleteTag={this.removeTag}
+            />
           </Grid>
         </Grid>
       </div>
@@ -126,10 +157,10 @@ class ABlog extends Component {
 
 export default compose(
   graphql(FETCH_POSTS_SHALLOW, {
-    props: ({ data }) => ({
-      posts: data.posts,
-      isLoading: data.loading
-    })
+    name: "FetchPostsShallow"
+  }),
+  graphql(FETCH_TAGS, {
+    name: "FetchTags"
   }),
   graphql(ADD_POST, { props: makeUpdateMap({ name: "addPost", cb: syncAdd }) }),
   graphql(DELETE_POST, {

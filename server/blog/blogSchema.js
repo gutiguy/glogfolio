@@ -131,7 +131,7 @@ const resolvers = {
           year
         );
       }
-      if (Array.isArray(tags)) {
+      if (Array.isArray(tags) && tags.length) {
         getPosts = getPosts.whereIn("tags.id", tags);
       }
       return await getPosts.groupBy("post.id").orderBy("post.updated_at");

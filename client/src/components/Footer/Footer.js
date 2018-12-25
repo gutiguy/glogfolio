@@ -132,6 +132,9 @@ class Footer extends Component {
   }
 }
 
+Footer.defaultProps = {
+  listTypes: []
+};
 export default compose(
   graphql(FETCH_LISTS, {
     props: ({ data: { listTypes, loading } }) => ({

@@ -39,7 +39,7 @@ export default class CheckboxGroup extends Component {
             label={box.name}
             control={
               <Checkbox
-                checked={value.includes(box)}
+                checked={value.map(v => v.id).includes(box.id)}
                 {...field}
                 {...other}
                 onChange={() => this.changeValue({ id, box, value })}

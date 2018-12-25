@@ -8,6 +8,9 @@ import { SortableHandle } from "react-sortable-hoc";
 const DragHandle = SortableHandle(() => <Reorder>reorder_icon</Reorder>);
 
 function injectButtons({ rows, handleEdit, handleSelection }) {
+  if (!rows) {
+    return [];
+  }
   return rows.map(row => ({
     ...row,
     drag: <DragHandle />,

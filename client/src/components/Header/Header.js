@@ -16,6 +16,7 @@ import { FETCH_NAVIGATIONS_FOR_INTERFACE } from "../../graphql/navigation";
 import { graphql } from "react-apollo";
 import * as actions from "../../actions/adminActions";
 import withLoading from "../../hoc/withLoading";
+
 const styles = theme => ({
   root: {
     width: theme.desktopWidth,
@@ -197,6 +198,9 @@ class Header extends React.Component {
   }
 }
 
+Header.defaultProps = {
+  navigations: []
+};
 const mapStateToProps = state => {
   return {
     isVerified: state.admin.isVerified

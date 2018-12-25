@@ -45,4 +45,8 @@ class APosts extends Component {
   }
 }
 
+APosts.defaultProps = {
+  posts: []
+};
+
 export default APosts;
