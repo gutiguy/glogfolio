@@ -12,11 +12,12 @@ import CheckboxGroup from "../Form/CheckboxGroup";
 import withLoading from "../../../hoc/withLoading";
 import { graphql, compose } from "react-apollo";
 import { FETCH_TAGS } from "../../../graphql/blog";
+
 class APostForm extends Component {
   constructor(props) {
     super(props);
 
-    if (props.editedPost) {
+    if (props.editedPost && props.editedPost.posts) {
       const content = JSON.parse(props.editedPost.posts[0].content);
       this.state = { richValue: Value.fromJSON(content) };
     } else {
@@ -134,7 +135,7 @@ class APostForm extends Component {
 
 APostForm.propTypes = {
   perma: PropTypes.string,
-  editedPage: PropTypes.object,
+  editedPost: PropTypes.object,
   title: PropTypes.string,
   initialValues: PropTypes.object
 };

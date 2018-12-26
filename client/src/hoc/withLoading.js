@@ -12,3 +12,13 @@ export default function withLoading(LoadingComponent) {
     );
   };
 }
+
+/* Use this when you want the component only to mount when loading is done (and unmount when it resumes) */
+export function withLoadingAndMount(LoadingComponent) {
+  return function WithLoadingAndMount(props) {
+    const { isLoading, ...rest } = props;
+    if (isLoading) {
+      return <RingLoader />;
+    } else return <LoadingComponent {...rest} />;
+  };
+}

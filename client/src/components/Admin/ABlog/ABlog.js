@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import APosts from "./APosts";
 import BlogSideBar from "./BlogSideBar";
-import { Grid } from "@material-ui/core";
+import { Grid, FormControl, Select, MenuItem } from "@material-ui/core";
 import { debounce } from "debounce";
 import AToolbar from "../AToolbar";
 import APostForm from "./APostForm";
@@ -14,7 +14,7 @@ import {
   FETCH_TAGS
 } from "../../../graphql/blog";
 import { syncAdd, syncDelete } from "./blogMutationSyncs";
-import withLoading from "../../../hoc/withLoading";
+import withLoading, { withLoadingAndMount } from "../../../hoc/withLoading";
 import { graphql, compose } from "react-apollo";
 import { makeUpdateMap, stripTypenames } from "../../../graphql/utils";
 import ATagsInput from "./ATagsInput";
@@ -36,7 +36,7 @@ const APostEditForm = compose(
       isLoading: loading
     })
   }),
-  withLoading
+  withLoadingAndMount
 )(APostForm);
 
 class ABlog extends Component {
@@ -98,6 +98,9 @@ class ABlog extends Component {
     this.setState({ currentlyEditing: null });
   };
 
+  changePublishStatus = e => {
+    this.setState({ publishStatus: e.target.value });
+  };
   render() {
     const {
       addForm,
@@ -148,6 +151,21 @@ class ABlog extends Component {
           onAdd={() => this.setState({ addForm: true })}
         >
           <ATagsInput tags={tags} />
+          <FormControl>
+            <Select
+              value={publishStatus}
+              onChange={this.changePublishStatus}
+              name="PublishStatus"
+            >
+              {Object.entries(PublishEnum).map(type => {
+                return (
+                  <MenuItem key={type[1]} value={type[1]}>
+                    {type[0] && type[0].toUpperCase()}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
         </AToolbar>
         <Grid container spacing={24}>
           <Grid item xs={8}>
