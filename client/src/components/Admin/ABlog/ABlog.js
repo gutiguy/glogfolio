@@ -19,6 +19,10 @@ import { graphql, compose } from "react-apollo";
 import { makeUpdateMap, stripTypenames } from "../../../graphql/utils";
 import ATagsInput from "./ATagsInput";
 
+const APostsLoading = withLoading(APosts);
+
+let PublishEnum = Object.freeze({ published: 0, draft: 1, all: 2 });
+
 const APostEditForm = compose(
   graphql(FETCH_POST_DEEP, {
     name: "editedPost",
@@ -42,6 +46,7 @@ class ABlog extends Component {
       addForm: false,
       currentlyEditing: null,
       selectedTags: [],
+      publishStatus: PublishEnum.all, // Published, Draft or all
       month: null,
       year: null
     };
@@ -50,7 +55,6 @@ class ABlog extends Component {
   }
 
   refetchPosts = () => {
-    console.log(this.state.selectedTags);
     this.props.FetchPostsShallow.refetch({
       tags: this.state.selectedTags
     });
@@ -94,14 +98,29 @@ class ABlog extends Component {
     this.setState({ currentlyEditing: null });
   };
 
-  componentDidMount() {
-    console.log("mounting");
-  }
   render() {
-    const { addForm, currentlyEditing, selectedTags, month, year } = this.state;
-    let { posts } = this.props.FetchPostsShallow;
-    const { tags } = this.props.FetchTags;
-
+    const {
+      addForm,
+      currentlyEditing,
+      selectedTags,
+      month,
+      year,
+      publishStatus
+    } = this.state;
+    const { posts, loading: PostsLoading } = this.props.FetchPostsShallow;
+    const { tags, loading: TagsLoading } = this.props.FetchTags;
+    let mutatedPosts;
+    if (posts) {
+      if (publishStatus !== PublishEnum.all) {
+        if (publishStatus === PublishEnum.draft) {
+          mutatedPosts = posts.filter(post => post.draft === true);
+        } else {
+          mutatedPosts = posts.filter(post => post.draft === false);
+        }
+      } else {
+        mutatedPosts = [...posts];
+      }
+    } else mutatedPosts = [];
     if (addForm) {
       return (
         <APostForm
@@ -132,9 +151,10 @@ class ABlog extends Component {
         </AToolbar>
         <Grid container spacing={24}>
           <Grid item xs={8}>
-            <APosts
+            <APostsLoading
+              isLoading={PostsLoading || TagsLoading}
               selectedTags={selectedTags}
-              posts={posts}
+              posts={mutatedPosts}
               month={month}
               year={year}
               onDelete={this.submitDelete}

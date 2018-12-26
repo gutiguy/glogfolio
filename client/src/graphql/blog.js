@@ -7,6 +7,7 @@ export const FETCH_POSTS_SHALLOW = gql`
         title
         summary
         draft
+        updated_at
         tags {
           id
           name
@@ -21,6 +22,7 @@ export const FETCH_POSTS_SHALLOW = gql`
         title
         content
         draft
+        updated_at
         tags {
           id
           name

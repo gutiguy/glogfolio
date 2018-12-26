@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Paper } from "@material-ui/core";
 import styled from "styled-components";
 import TagsPanel from "./TagsPanel";
+import DatesPanel from "./DatesPanel";
 const MarginPaper = styled(Paper)`
   margin-top: 1rem;
   padding: 0.5rem;
@@ -19,6 +20,7 @@ export default class BlogSideBar extends Component {
     } = this.props;
     return (
       <MarginPaper>
+        <DatesPanel />
         <TagsPanel
           tags={tags}
           selectedTags={selectedTags}

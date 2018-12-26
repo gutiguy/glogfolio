@@ -1,5 +1,4 @@
 import { FETCH_POST_DEEP, FETCH_POSTS_SHALLOW } from "../../../graphql/blog";
-import { swapArrayElements } from "../../../utils/reorder";
 
 function updateShallowQuery(proxy, mutatedPosts) {
   proxy.writeQuery({

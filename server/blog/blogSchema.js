@@ -9,6 +9,11 @@ const knex = Post.knex();
 const typeDef = gql`
   scalar Date
 
+  type PostDates {
+    year: Int!
+    month: Int!
+  }
+
   type Post {
     id: ID
     updated_at: Date
@@ -43,8 +48,9 @@ const typeDef = gql`
   }
 
   extend type Query {
-    posts(ids: [ID], tags: [ID], draft: Boolean): [Post]!
+    posts(ids: [ID], tags: [ID], draft: Int): [Post]!
     tags(ids: [ID]): [Tag]!
+    postDates(tags: [ID], draft: Int): [PostDates]!
   }
 
   extend type Mutation {
@@ -66,6 +72,7 @@ const typeDef = gql`
   }
 `;
 
+/* Utility functions */
 function editTagsQuery(editedTags) {
   return transaction(knex, async trx => {
     let updatedTags = editedTags.map(tag =>
@@ -84,6 +91,21 @@ function deleteTagsQuery(ids) {
     .delete()
     .whereIn("id", ids);
 }
+
+function basicPostsQuery(ids, tags, draft) {
+  let getPosts = Post.query().leftJoinRelation("tags");
+  if (Array.isArray(ids)) {
+    getPosts = getPosts.whereIn("post.id", ids);
+  }
+  if (Array.isArray(tags) && tags.length) {
+    getPosts = getPosts.whereIn("tags.id", tags);
+  }
+  if (draft !== 2) {
+    getPosts = getPosts.where("post.draft", Boolean(draft));
+  }
+  return getPosts;
+}
+/* End of utility functions */
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -113,12 +135,8 @@ const resolvers = {
     }
   },
   Query: {
-    async posts(_, { ids, draft = "A", tags, month, year }) {
-      let getPosts = Post.query().leftJoinRelation("tags");
-
-      if (Array.isArray(ids)) {
-        getPosts = getPosts.whereIn("post.id", ids);
-      }
+    async posts(_, { ids, draft = 2, tags, month, year }) {
+      let getPosts = basicPostsQuery(ids, tags, draft);
       if (month) {
         getPosts = getPosts.andWhere(
           knex.raw("EXTRACT(MONTH from updated_at)"),
@@ -131,10 +149,18 @@ const resolvers = {
           year
         );
       }
-      if (Array.isArray(tags) && tags.length) {
-        getPosts = getPosts.whereIn("tags.id", tags);
-      }
       return await getPosts.groupBy("post.id").orderBy("post.updated_at");
+    },
+    async postDates(_, { ids, draft = 2, tags }) {
+      let getPostDates = basicPostsQuery(ids, tags, draft).select(
+        knex.raw("EXTRACT(YEAR FROM post.updated_at) AS year"),
+        knex.raw("EXTRACT(MONTH FROM post.updated_at) AS month")
+      );
+
+      console.log(getPostDates.groupBy("year", "month").toString());
+      return await getPostDates
+        .groupBy("year", "month")
+        .orderBy("year", "month");
     },
     async tags(_, { ids }) {
       let getTags = Tag.query();
