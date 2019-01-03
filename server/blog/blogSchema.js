@@ -6,6 +6,9 @@ const { transaction } = require("objection");
 
 const knex = Post.knex();
 
+const PUBLISHED = "PUBLISHED",
+  DRAFT = "DRAFT";
+
 const typeDef = gql`
   scalar Date
 
@@ -16,10 +19,9 @@ const typeDef = gql`
 
   type Post {
     id: ID
-    updated_at: Date
+    posted_at: Date
     title: String
     content: String
-    draft: Boolean
     summary: String
     tags: [Tag]
   }
@@ -27,8 +29,7 @@ const typeDef = gql`
   input PostInput {
     title: String
     content: String
-    updated_at: Date
-    draft: Boolean
+    posted_at: Date
     summary: String
     tags: [ID]
   }
@@ -47,10 +48,15 @@ const typeDef = gql`
     name: String!
   }
 
+  enum PublishStatus {
+    DRAFT
+    PUBLISHED
+  }
+
   extend type Query {
-    posts(ids: [ID], tags: [ID], draft: Int): [Post]!
+    posts(ids: [ID], tags: [ID], publishStatus: PublishStatus): [Post]!
     tags(ids: [ID]): [Tag]!
-    postDates(tags: [ID], draft: Int): [PostDates]!
+    postDates(tags: [ID], publishStatus: PublishStatus): [PostDates]!
   }
 
   extend type Mutation {
@@ -62,8 +68,12 @@ const typeDef = gql`
       editedTags: [TagEditInput]
       deletedTags: [ID]
     ): Boolean!
-    addPost(addedPost: PostInput!): Post!
-    editPost(id: ID!, editedPost: PostInput!): Post!
+    addPost(addedPost: PostInput!, publishStatus: PublishStatus): Post!
+    editPost(
+      id: ID!
+      publishStatus: PublishStatus
+      editedPost: PostInput!
+    ): Post!
     deletePost(id: ID!): Int!
   }
 
@@ -92,7 +102,7 @@ function deleteTagsQuery(ids) {
     .whereIn("id", ids);
 }
 
-function basicPostsQuery(ids, tags, draft) {
+function basicPostsQuery(ids, tags, publishStatus) {
   let getPosts = Post.query().leftJoinRelation("tags");
   if (Array.isArray(ids)) {
     getPosts = getPosts.whereIn("post.id", ids);
@@ -100,8 +110,10 @@ function basicPostsQuery(ids, tags, draft) {
   if (Array.isArray(tags) && tags.length) {
     getPosts = getPosts.whereIn("tags.id", tags);
   }
-  if (draft !== 2) {
-    getPosts = getPosts.where("post.draft", Boolean(draft));
+  if (publishStatus === PUBLISHED) {
+    getPosts = getPosts.whereNotNull("post.posted_at");
+  } else if (publishStatus === DRAFT) {
+    getPosts = getPosts.whereNull("post.posted_at");
   }
   return getPosts;
 }
@@ -112,10 +124,10 @@ const resolvers = {
     name: "Date",
     description: "Date custom scalar type",
     parseValue(value) {
-      return new Date(value); // value from the client
+      return value; // value from the client
     },
     serialize(value) {
-      return value.getTime(); // value sent to the client
+      return value; // value sent to the client
     },
     parseLiteral(ast) {
       if (ast.kind === Kind.INT) {
@@ -135,29 +147,28 @@ const resolvers = {
     }
   },
   Query: {
-    async posts(_, { ids, draft = 2, tags, month, year }) {
-      let getPosts = basicPostsQuery(ids, tags, draft);
+    async posts(_, { ids, publishStatus, tags, month, year }) {
+      let getPosts = basicPostsQuery(ids, tags, publishStatus);
       if (month) {
         getPosts = getPosts.andWhere(
-          knex.raw("EXTRACT(MONTH from updated_at)"),
+          knex.raw("EXTRACT(MONTH from posted_at)"),
           month
         );
       }
       if (year) {
         getPosts = getPosts.andWhere(
-          knex.raw("EXTRACT(YEAR FROM updated_at)"),
+          knex.raw("EXTRACT(YEAR FROM posted_at)"),
           year
         );
       }
-      return await getPosts.groupBy("post.id").orderBy("post.updated_at");
+      return await getPosts.groupBy("post.id").orderBy("post.posted_at");
     },
-    async postDates(_, { ids, draft = 2, tags }) {
-      let getPostDates = basicPostsQuery(ids, tags, draft).select(
-        knex.raw("EXTRACT(YEAR FROM post.updated_at) AS year"),
-        knex.raw("EXTRACT(MONTH FROM post.updated_at) AS month")
+    async postDates(_, { ids, publishStatus, tags }) {
+      let getPostDates = basicPostsQuery(ids, tags, publishStatus).select(
+        knex.raw("EXTRACT(YEAR FROM post.posted_at) AS year"),
+        knex.raw("EXTRACT(MONTH FROM post.posted_at) AS month")
       );
 
-      console.log(getPostDates.groupBy("year", "month").toString());
       return await getPostDates
         .groupBy("year", "month")
         .orderBy("year", "month");
@@ -171,15 +182,21 @@ const resolvers = {
     }
   },
   Mutation: {
-    async addPost(_, { addedPost }) {
-      const { title, content, draft = true, tags, summary } = addedPost;
+    async addPost(_, { addedPost, publishStatus = DRAFT }) {
+      const { title, content, tags, summary } = addedPost;
+      let { posted_at = null } = addedPost;
+      if (publishStatus === PUBLISHED) {
+        let d = new Date();
+        posted_at = d.toISOString();
+      }
       return transaction(knex, async trx => {
         const post = await Post.query(trx).insert({
           title,
           content,
-          draft,
-          summary
+          summary,
+          posted_at
         });
+
         if (Array.isArray(tags)) {
           return post
             .$relatedQuery("tags", trx)
@@ -192,13 +209,26 @@ const resolvers = {
         }
       });
     },
-    async editPost(_, { editedPost, id }) {
+    async editPost(_, { editedPost, publishStatus, id }) {
       return transaction(knex, async trx => {
+        if (publishStatus === DRAFT) {
+          editedPost.posted_at = null;
+        } else if (publishStatus === PUBLISHED) {
+          let now = new Date();
+          editedPost.posted_at = now.toISOString();
+        }
+        console.log(editedPost.posted_at);
+        console.log(
+          Post.query(trx)
+            .patchAndFetchById(id, editedPost)
+            .toString()
+        );
         const updatedPost = await Post.query(trx).patchAndFetchById(
           id,
           editedPost
         );
         await updatedPost.$relatedQuery("tags", trx).unrelate();
+        console.log(updatedPost);
         if (Array.isArray(editedPost.tags) && editedPost.tags.length) {
           return updatedPost
             .$relatedQuery("tags")

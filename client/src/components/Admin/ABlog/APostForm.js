@@ -60,15 +60,11 @@ class APostForm extends Component {
 
   render() {
     const { title, onClose, data } = this.props;
-    let initialValues = this.props.initialValues;
-    if (this.props.editedPage) {
-      const {
-        content: _,
-        __typename: __,
-        ...tempInitialValues
-      } = this.props.editedPage.pages[0];
-
-      initialValues = tempInitialValues;
+    let { posted_at, ...initialValues } = this.props.initialValues;
+    if (posted_at === null) {
+      initialValues.draft = true;
+    } else {
+      initialValues.draft = false;
     }
     return (
       <div>
@@ -143,6 +139,7 @@ APostForm.propTypes = {
 APostForm.defaultProps = {
   submitLabel: "Submit",
   title: "Form",
+  date: new Date(),
   initialValues: {
     title: "",
     summary: "",

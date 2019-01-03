@@ -6,8 +6,7 @@ export const FETCH_POSTS_SHALLOW = gql`
         id
         title
         summary
-        draft
-        updated_at
+        posted_at
         tags {
           id
           name
@@ -21,8 +20,7 @@ export const FETCH_POSTS_SHALLOW = gql`
         id
         title
         content
-        draft
-        updated_at
+        posted_at
         tags {
           id
           name
@@ -31,11 +29,12 @@ export const FETCH_POSTS_SHALLOW = gql`
     }
   `,
   ADD_POST = gql`
-    mutation AddPost($addedPost: PostInput!) {
-      addPost(addedPost: $addedPost) {
+    mutation AddPost($addedPost: PostInput!, $publishStatus: PublishStatus) {
+      addPost(addedPost: $addedPost, publishStatus: $publishStatus) {
         id
         title
         summary
+        posted_at
         tags {
           id
           name
@@ -44,13 +43,20 @@ export const FETCH_POSTS_SHALLOW = gql`
     }
   `,
   EDIT_POST = gql`
-    mutation EditPost($id: ID!, $editedPost: PostInput!) {
-      editPost(id: $id, editedPost: $editedPost) {
+    mutation EditPost(
+      $id: ID!
+      $editedPost: PostInput!
+      $publishStatus: PublishStatus
+    ) {
+      editPost(
+        id: $id
+        editedPost: $editedPost
+        publishStatus: $publishStatus
+      ) {
         id
         title
         summary
         content
-        draft
         tags {
           id
           name

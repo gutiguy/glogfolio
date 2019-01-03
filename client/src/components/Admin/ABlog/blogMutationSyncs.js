@@ -1,31 +1,23 @@
-import { FETCH_POST_DEEP, FETCH_POSTS_SHALLOW } from "../../../graphql/blog";
+import { FETCH_POSTS_SHALLOW } from "../../../graphql/blog";
 
 function updateShallowQuery(proxy, mutatedPosts) {
   proxy.writeQuery({
     query: FETCH_POSTS_SHALLOW,
     data: {
       posts: mutatedPosts
-    }
+    },
+    variables: { tags: null }
   });
-}
-
-function updateDeepQuery(proxy, mutatedPosts) {
-  proxy.writeQuery({
-    query: FETCH_POST_DEEP,
-    data: { posts: mutatedPosts }
-  });
-}
-
-function updateRelevantQueries(proxy, mutatedPosts) {
-  updateShallowQuery(proxy, mutatedPosts);
 }
 
 export const syncDelete = ({ id }) => proxy => {
   const { posts } = proxy.readQuery({
-    query: FETCH_POSTS_SHALLOW
+    query: FETCH_POSTS_SHALLOW,
+    variables: { tags: null }
   });
   const mutatedPosts = posts.filter(post => id !== post.id);
-  updateRelevantQueries(proxy, mutatedPosts);
+  console.log(mutatedPosts);
+  updateShallowQuery(proxy, mutatedPosts);
 };
 
 export const syncAdd = ({ addedPost }) => (
@@ -37,8 +29,10 @@ export const syncAdd = ({ addedPost }) => (
   }
 ) => {
   const { posts } = proxy.readQuery({
-    query: FETCH_POSTS_SHALLOW
+    query: FETCH_POSTS_SHALLOW,
+    variables: { tags: null }
   });
+  console.log(posts);
   const { tags, ...restOfPost } = addedPost;
   let parsedTags = tags.map(id => ({ id, __typename: "Tag" }));
   let mutatedPosts = [...posts];
@@ -48,7 +42,7 @@ export const syncAdd = ({ addedPost }) => (
     tags: parsedTags,
     __typename: "Post"
   });
-  updateRelevantQueries(proxy, mutatedPosts);
+  updateShallowQuery(proxy, mutatedPosts);
 };
 
 export const syncEdit = userInput => proxy => {
@@ -60,5 +54,5 @@ export const syncEdit = userInput => proxy => {
     ...mutatedPosts[mutatedIndex],
     ...editedPost
   };
-  updateRelevantQueries(proxy, mutatedPosts);
+  updateShallowQuery(proxy, mutatedPosts);
 };

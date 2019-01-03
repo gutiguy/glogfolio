@@ -76,7 +76,16 @@ class ABlog extends Component {
   };
 
   submitAdd = input => {
-    this.props.addPost({ addedPost: input });
+    const { draft, ...addedPost } = input;
+    console.log(addedPost);
+    let publishStatus;
+    if (draft === true) {
+      publishStatus = "DRAFT";
+    } else {
+      publishStatus = "PUBLISHED";
+    }
+    addedPost.tags = addedPost.tags.map(tag => tag.id);
+    this.props.addPost({ addedPost, publishStatus });
     this.setState({ addForm: false });
   };
 
@@ -85,10 +94,22 @@ class ABlog extends Component {
   };
 
   submitEdit = async input => {
-    const { id, tags, ...editedPost } = input;
+    const { id, tags, draft, ...editedPost } = input;
+    // If draft wasn't changed we signal that to the server (so that it doesn't reset the "posted at" date to the current date)
+    // If we want to coerce the server to reset the posted at date every time an undrafted page gets edited we can remove this condition.
+    let publishStatus;
+    if (draft === true && this.state.currentlyEditing.posted_at !== null) {
+      publishStatus = "DRAFT";
+    } else if (
+      draft === false &&
+      this.state.currentlyEditing.posted_at === null
+    ) {
+      publishStatus = "PUBLISHED";
+    }
     await this.props.editPost({
       variables: {
         id,
+        publishStatus,
         editedPost: {
           ...stripTypenames(editedPost),
           tags: tags.map(tag => tag.id)
@@ -195,7 +216,10 @@ class ABlog extends Component {
 
 export default compose(
   graphql(FETCH_POSTS_SHALLOW, {
-    name: "FetchPostsShallow"
+    name: "FetchPostsShallow",
+    variables: {
+      tags: null
+    }
   }),
   graphql(FETCH_TAGS, {
     name: "FetchTags"

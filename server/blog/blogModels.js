@@ -7,10 +7,6 @@ class Post extends Model {
     return "post";
   }
 
-  $beforeUpdate() {
-    this.updated_at = new Date().toISOString();
-  }
-
   static get jsonSchema() {
     return {
       type: "object",
@@ -18,9 +14,11 @@ class Post extends Model {
       properties: {
         id: { type: "integer" },
         title: { type: "string", maxLength: 255 },
-        draft: { type: "boolean" },
         content: { type: "text" },
-        summary: { type: "string", maxLength: 500 }
+        summary: { type: "string", maxLength: 500 },
+        posted_at: {
+          anyOf: [{ type: "string", format: "date-time" }, { type: "null" }]
+        }
       }
     };
   }
