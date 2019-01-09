@@ -77,7 +77,6 @@ class ABlog extends Component {
 
   submitAdd = input => {
     const { draft, ...addedPost } = input;
-    console.log(addedPost);
     let publishStatus;
     if (draft === true) {
       publishStatus = "DRAFT";
@@ -137,9 +136,9 @@ class ABlog extends Component {
     if (posts) {
       if (publishStatus !== PublishEnum.all) {
         if (publishStatus === PublishEnum.draft) {
-          mutatedPosts = posts.filter(post => post.draft === true);
+          mutatedPosts = posts.filter(post => post.posted_at === null);
         } else {
-          mutatedPosts = posts.filter(post => post.draft === false);
+          mutatedPosts = posts.filter(post => post.posted_at !== null);
         }
       } else {
         mutatedPosts = [...posts];

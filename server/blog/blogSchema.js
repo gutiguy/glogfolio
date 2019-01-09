@@ -171,7 +171,8 @@ const resolvers = {
 
       return await getPostDates
         .groupBy("year", "month")
-        .orderBy("year", "month");
+        .orderBy("year", "month")
+        .whereNotNull("post.posted_at");
     },
     async tags(_, { ids }) {
       let getTags = Tag.query();
@@ -217,18 +218,11 @@ const resolvers = {
           let now = new Date();
           editedPost.posted_at = now.toISOString();
         }
-        console.log(editedPost.posted_at);
-        console.log(
-          Post.query(trx)
-            .patchAndFetchById(id, editedPost)
-            .toString()
-        );
         const updatedPost = await Post.query(trx).patchAndFetchById(
           id,
           editedPost
         );
         await updatedPost.$relatedQuery("tags", trx).unrelate();
-        console.log(updatedPost);
         if (Array.isArray(editedPost.tags) && editedPost.tags.length) {
           return updatedPost
             .$relatedQuery("tags")

@@ -57,6 +57,7 @@ export const FETCH_POSTS_SHALLOW = gql`
         title
         summary
         content
+        posted_at
         tags {
           id
           name
@@ -88,5 +89,13 @@ export const FETCH_POSTS_SHALLOW = gql`
         editedTags: $editedTags
         deletedTags: $deletedTags
       )
+    }
+  `,
+  FETCH_POSTS_DATES = gql`
+    query PostDates {
+      postDates {
+        month
+        year
+      }
     }
   `;

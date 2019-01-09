@@ -20,7 +20,7 @@ export default class BlogSideBar extends Component {
     } = this.props;
     return (
       <MarginPaper>
-        <DatesPanel />
+        <DatesPanel month={month} year={year} />
         <TagsPanel
           tags={tags}
           selectedTags={selectedTags}
