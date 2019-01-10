@@ -7,6 +7,8 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import axios from "axios";
 import ImageGallery from "react-image-gallery";
 
+const { REACT_APP_AWS_BUCKET_URI } = process.env;
+
 const CardLink = styled.a`
   color: #fff;
   text-decoration: none;
@@ -53,9 +55,7 @@ class InformationCarousel extends Component {
         return {
           title: node.title,
           textualDescription: node.description,
-          original:
-            "***REMOVED***/carousel/" +
-            node.image_key,
+          original: REACT_APP_AWS_BUCKET_URI + "/carousel/" + node.image_key,
           link: node.url
         };
       });

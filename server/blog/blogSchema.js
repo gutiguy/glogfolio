@@ -168,10 +168,12 @@ const resolvers = {
         knex.raw("EXTRACT(YEAR FROM post.posted_at) AS year"),
         knex.raw("EXTRACT(MONTH FROM post.posted_at) AS month")
       );
-
       return await getPostDates
         .groupBy("year", "month")
-        .orderBy("year", "month")
+        .orderBy([
+          { column: "year", order: "desc" },
+          { column: "month", order: "desc" }
+        ])
         .whereNotNull("post.posted_at");
     },
     async tags(_, { ids }) {

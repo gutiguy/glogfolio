@@ -10,6 +10,7 @@ import ImageUploader, { ImagePreview } from "../ImageUploader";
 import * as Yup from "yup";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
+const { REACT_APP_AWS_BUCKET_URI } = process.env;
 
 const CROP_RATIO = 2100 / 900;
 
@@ -83,8 +84,7 @@ class ACarouselForm extends Component {
       imageField = () => (
         <ImagePreview
           src={
-            "***REMOVED***/carousel/" +
-            initialValues.image_key
+            REACT_APP_AWS_BUCKET_URI + "/carousel/" + initialValues.image_key
           }
           isLoading={false}
         />

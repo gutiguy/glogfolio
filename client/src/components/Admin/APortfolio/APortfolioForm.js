@@ -11,6 +11,8 @@ import ImageUploader from "../ImageUploader";
 import { ImagePreview } from "../ImageUploader";
 import CheckboxTree from "../CheckboxTree";
 import { Grid } from "@material-ui/core";
+const { REACT_APP_AWS_BUCKET_URI } = process.env;
+
 class APortfolioForm extends Component {
   state = {
     image: null,
@@ -43,8 +45,7 @@ class APortfolioForm extends Component {
     let previewSrc = null;
     if (initialValues.image_key) {
       previewSrc =
-        "***REMOVED***/portfolio/" +
-        initialValues.image_key;
+        REACT_APP_AWS_BUCKET_URI + "/portfolio/" + initialValues.image_key;
     } else if (this.state.image) {
       previewSrc = this.state.image.src;
     }

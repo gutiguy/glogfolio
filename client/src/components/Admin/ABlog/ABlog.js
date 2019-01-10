@@ -18,6 +18,7 @@ import withLoading, { withLoadingAndMount } from "../../../hoc/withLoading";
 import { graphql, compose } from "react-apollo";
 import { makeUpdateMap, stripTypenames } from "../../../graphql/utils";
 import ATagsInput from "./ATagsInput";
+import { getYear, getMonth } from "date-fns";
 
 const APostsLoading = withLoading(APosts);
 
@@ -47,8 +48,8 @@ class ABlog extends Component {
       currentlyEditing: null,
       selectedTags: [],
       publishStatus: PublishEnum.all, // Published, Draft or all
-      month: null,
-      year: null
+      selecteMonth: null,
+      selectedYear: null
     };
 
     this.refetchPosts = debounce(this.refetchPosts, 700);
@@ -73,6 +74,24 @@ class ABlog extends Component {
       selectedTags: prevState.selectedTags.filter(tag => tag !== id)
     }));
     this.refetchPosts();
+  };
+
+  switchYear = year => {
+    const { selectedYear } = this.state;
+    if (year === selectedYear) {
+      this.setState({ selectedYear: null });
+    } else {
+      this.setState({ selectedYear: year });
+    }
+  };
+
+  switchMonth = month => {
+    const { selectedMonth } = this.state;
+    if (month === selectedMonth) {
+      this.setState({ selectedMonth: null });
+    } else {
+      this.setState({ selectedMonth: month });
+    }
   };
 
   submitAdd = input => {
@@ -126,24 +145,33 @@ class ABlog extends Component {
       addForm,
       currentlyEditing,
       selectedTags,
-      month,
-      year,
+      selectedMonth,
+      selectedYear,
       publishStatus
     } = this.state;
     const { posts, loading: PostsLoading } = this.props.FetchPostsShallow;
     const { tags, loading: TagsLoading } = this.props.FetchTags;
-    let mutatedPosts;
+    let mutatedPosts = [];
     if (posts) {
+      mutatedPosts = [...posts];
+      if (selectedYear) {
+        mutatedPosts = mutatedPosts.filter(
+          post => getYear(post.posted_at) === selectedYear
+        );
+      }
+      if (selectedMonth) {
+        mutatedPosts = mutatedPosts.filter(
+          post => getMonth(post.posted_at) === selectedMonth - 1
+        );
+      }
       if (publishStatus !== PublishEnum.all) {
         if (publishStatus === PublishEnum.draft) {
-          mutatedPosts = posts.filter(post => post.posted_at === null);
+          mutatedPosts = mutatedPosts.filter(post => post.posted_at === null);
         } else {
-          mutatedPosts = posts.filter(post => post.posted_at !== null);
+          mutatedPosts = mutatedPosts.filter(post => post.posted_at !== null);
         }
-      } else {
-        mutatedPosts = [...posts];
       }
-    } else mutatedPosts = [];
+    }
     if (addForm) {
       return (
         <APostForm
@@ -193,8 +221,8 @@ class ABlog extends Component {
               isLoading={PostsLoading || TagsLoading}
               selectedTags={selectedTags}
               posts={mutatedPosts}
-              month={month}
-              year={year}
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
               onDelete={this.submitDelete}
               onEdit={currentlyEditing => this.setState({ currentlyEditing })}
             />
@@ -205,6 +233,10 @@ class ABlog extends Component {
               selectedTags={selectedTags}
               onAddTag={this.addTag}
               onDeleteTag={this.removeTag}
+              selectedYear={selectedYear}
+              selectedMonth={selectedMonth}
+              switchMonth={this.switchMonth}
+              switchYear={this.switchYear}
             />
           </Grid>
         </Grid>

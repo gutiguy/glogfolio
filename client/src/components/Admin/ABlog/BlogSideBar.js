@@ -15,12 +15,19 @@ export default class BlogSideBar extends Component {
       selectedTags,
       onAddTag,
       onDeleteTag,
-      month,
-      year
+      selectedMonth,
+      selectedYear,
+      switchYear,
+      switchMonth
     } = this.props;
     return (
       <MarginPaper>
-        <DatesPanel month={month} year={year} />
+        <DatesPanel
+          selectedMonth={selectedMonth}
+          selectedYear={selectedYear}
+          switchYear={switchYear}
+          switchMonth={switchMonth}
+        />
         <TagsPanel
           tags={tags}
           selectedTags={selectedTags}

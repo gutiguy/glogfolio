@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import * as actions from "../../../actions/categoryActions";
 import Grid from "@material-ui/core/Grid";
 import SelectedImage from "../SelectedImage";
+const { REACT_APP_AWS_BUCKET_URI } = process.env;
 
 class APortfolio extends Component {
   state = {
@@ -32,9 +33,7 @@ class APortfolio extends Component {
       let [, width, height] = getDimensinos;
       return {
         image_key: "portfolio/" + image_key,
-        src:
-          "***REMOVED***/portfolio/" +
-          image.image_key,
+        src: REACT_APP_AWS_BUCKET_URI + "/portfolio/" + image.image_key,
         ...otherProps,
         width: parseInt(width, 10),
         height: parseInt(height, 10),
