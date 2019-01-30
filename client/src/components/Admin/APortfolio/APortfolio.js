@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import * as actions from "../../../actions/categoryActions";
 import Grid from "@material-ui/core/Grid";
 import SelectedImage from "../SelectedImage";
+
 const { REACT_APP_AWS_BUCKET_URI } = process.env;
 
 class APortfolio extends Component {

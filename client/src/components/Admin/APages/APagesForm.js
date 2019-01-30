@@ -13,7 +13,7 @@ class APagesForm extends Component {
   constructor(props) {
     super(props);
 
-    if (props.editedPage) {
+    if (props.editedPage && props.editedPage.pages) {
       const content = JSON.parse(props.editedPage.pages[0].content);
       this.state = { richValue: Value.fromJSON(content) };
     } else {
@@ -55,9 +55,9 @@ class APagesForm extends Component {
   };
 
   render() {
-    const { title, onClose } = this.props;
+    const { title, onClose, editedPage } = this.props;
     let initialValues = this.props.initialValues;
-    if (this.props.editedPage) {
+    if (editedPage && editedPage.pages) {
       const {
         content: _,
         __typename: __,

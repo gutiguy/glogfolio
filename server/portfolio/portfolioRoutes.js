@@ -1,7 +1,6 @@
 var arrayToTree = require("array-to-tree");
 const uuid = require("uuid/v1");
 const awsUtilities = require("../services/awsUtilities");
-const getExtension = require("mime-types").extension;
 
 // Routes for the portfolio's API
 
@@ -37,9 +36,7 @@ module.exports = app => {
       image_key: imageKey
     });
     if (typeof Array.isArray(selectedCategories)) {
-      const RelateCategories = await newArt
-        .$relatedQuery("categories")
-        .relate(selectedCategories);
+      await newArt.$relatedQuery("categories").relate(selectedCategories);
     }
     res.status(200).send({ key: imageKey });
   });
@@ -69,11 +66,9 @@ module.exports = app => {
       name,
       description
     });
-    const DeleteRelations = await newArt.$relatedQuery("categories").unrelate();
+    await newArt.$relatedQuery("categories").unrelate();
     if (typeof Array.isArray(selectedCategories)) {
-      const RelateCategories = await newArt
-        .$relatedQuery("categories")
-        .relate(selectedCategories);
+      await newArt.$relatedQuery("categories").relate(selectedCategories);
     }
     if (newArt) {
       res.status(200).send({ message: "All is well" });
@@ -84,7 +79,6 @@ module.exports = app => {
 
   // Get the categories in a JSON tree format, or normalized
   app.get("/api/categories", async (req, res) => {
-    let response;
     let normalize = req.query.normalize;
     // Get all Categories (except for the dummy root)
     let categories = await Category.query()
@@ -92,7 +86,7 @@ module.exports = app => {
       .orderBy("order", "asc")
       .where("parent_id", "IS NOT", null);
     let baseCategories = [];
-    if (typeof categories === "undefined") {
+    if (!categories === "undefined") {
       res.status(204).send({ error: "No categories found" });
     } else {
       // Normalize
