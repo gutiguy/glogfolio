@@ -15,9 +15,10 @@ module.exports = app => {
   });
 
   app.get("/api/current_user", (req, res) => {
-    if (typeof req.user === "undefined") {
+    if (!req.user) {
       res.sendStatus(201);
+    } else {
+      res.status(200).send(req.user);
     }
-    res.status(200).send(req.user);
   });
 };
