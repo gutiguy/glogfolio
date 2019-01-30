@@ -79,9 +79,9 @@ class ABlog extends Component {
   switchYear = year => {
     const { selectedYear } = this.state;
     if (year === selectedYear) {
-      this.setState({ selectedYear: null });
+      this.setState({ selectedYear: null, selecteMonth: null });
     } else {
-      this.setState({ selectedYear: year });
+      this.setState({ selectedYear: year, selecteMonth: null });
     }
   };
 
