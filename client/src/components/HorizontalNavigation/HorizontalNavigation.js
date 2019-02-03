@@ -28,7 +28,7 @@ const HorizontalNavigation = props => {
   const { staticContext, ...rest } = { props };
   return props.options.map(option => {
     let newOption;
-    if (typeof option.onClick !== "undefined") {
+    if (option.onClick) {
       newOption = (
         <ThemeHoverButton key={option.title} onClick={option.onClick}>
           {option.title}

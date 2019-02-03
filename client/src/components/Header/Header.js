@@ -2,9 +2,7 @@ import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, IconButton } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
 import { Hidden, Backdrop } from "@material-ui/core";
-import SearchForm from "../Search/SearchForm";
 import VerticalMenu from "../VerticalMenu/VerticalMenu";
 import HorizontalNavigation from "../HorizontalNavigation/HorizontalNavigation";
 import { Transition } from "react-transition-group";
@@ -43,7 +41,6 @@ const styles = theme => ({
 
 class Header extends React.Component {
   state = {
-    searchOpen: false,
     menuOpen: false,
     navigationOptions: [
       {
@@ -68,8 +65,8 @@ class Header extends React.Component {
     this.props.verifyAdmin();
   }
 
-  handleSearchClickAway = () => {
-    this.setState({ searchOpen: false, menuOpen: false });
+  handleClickAway = () => {
+    this.setState({ menuOpen: false });
   };
 
   handleLogOut = async () => {
@@ -82,10 +79,9 @@ class Header extends React.Component {
   };
 
   render() {
-    let searchForm;
     let verticalMenu;
     let dynamicNavigations = this.props.navigations.map(navigation => {
-      let link = "unknown";
+      let link;
       if (navigation.page) {
         link = navigation.page.perma;
       } else {
@@ -108,18 +104,10 @@ class Header extends React.Component {
         onClick: this.handleLogOut
       });
     }
-    this.state.searchOpen === true
-      ? (searchForm = (
-          <SearchForm
-            handleClickAway={() => this.handleSearchClickAway}
-            className={this.props.classes.centerDocument}
-          />
-        ))
-      : (searchForm = "");
     this.state.menuOpen === true
       ? (verticalMenu = (
           <VerticalMenu
-            handleClickAway={() => this.handleSearchClickAway}
+            handleClickAway={() => this.handleClickAway}
             className={this.props.classes.centerDocument}
             navigationOptions={newNavigationOptions}
           />
@@ -147,13 +135,6 @@ class Header extends React.Component {
           <Hidden smDown>
             <HorizontalNavigation options={newNavigationOptions} />
           </Hidden>
-          <IconButton
-            color="inherit"
-            aria-label="Search"
-            onClick={() => this.setState({ searchOpen: true })}
-          >
-            <SearchIcon />
-          </IconButton>
           <Transition timeout={300} in={this.state.menuOpen}>
             {state => {
               if (state === "entering" || state === "entered")
@@ -168,25 +149,6 @@ class Header extends React.Component {
                       }
                     />
                     {verticalMenu}
-                  </div>
-                );
-              else return null;
-            }}
-          </Transition>
-          <Transition timeout={300} in={this.state.searchOpen}>
-            {state => {
-              if (state === "entering" || state === "entered")
-                return (
-                  <div>
-                    <Backdrop
-                      open={this.state.searchOpen}
-                      className={
-                        this.state.searchOpen === true
-                          ? this.props.classes.backdropTop
-                          : ""
-                      }
-                    />
-                    {searchForm}
                   </div>
                 );
               else return null;
