@@ -119,10 +119,10 @@ class Footer extends Component {
                     Follow me:
                   </Typography>
                   <Typography variant="subheading" color="inherit" paragraph>
-                    {LinkIconPair(Facebook, config.socialMedia.facebook)}
-                    {LinkIconPair(Youtube, config.socialMedia.youtube)}
-                    {LinkIconPair(Instagram, config.socialMedia.instagram)}
-                    {LinkIconPair(Twitter, config.socialMedia.twitter)}
+                    {LinkIconPair(Facebook, config.socialMediaLinks.facebook)}
+                    {LinkIconPair(Youtube, config.socialMediaLinks.youtube)}
+                    {LinkIconPair(Instagram, config.socialMediaLinks.instagram)}
+                    {LinkIconPair(Twitter, config.socialMediaLinks.twitter)}
                   </Typography>
                 </Grid>
               </Grid>
