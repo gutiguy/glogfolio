@@ -14,6 +14,7 @@ import { FETCH_NAVIGATIONS_FOR_INTERFACE } from "../../graphql/navigation";
 import { graphql } from "react-apollo";
 import * as actions from "../../actions/adminActions";
 import withLoading from "../../hoc/withLoading";
+import config from "../../config.js";
 
 const styles = theme => ({
   root: {
@@ -130,7 +131,7 @@ class Header extends React.Component {
             color="inherit"
             className={this.props.classes.flex}
           >
-            Guthred's Art Blog
+            {config.siteTitle || "Site Title Goes Here"}
           </Typography>
           <Hidden smDown>
             <HorizontalNavigation options={newNavigationOptions} />

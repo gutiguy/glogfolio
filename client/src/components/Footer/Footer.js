@@ -9,6 +9,7 @@ import { graphql, compose } from "react-apollo";
 import gql from "graphql-tag";
 
 import withLoading from "../../hoc/withLoading";
+import config from "../../config.js";
 
 const FETCH_LISTS = gql`
   {
@@ -57,6 +58,17 @@ const styles = theme => ({
   }
 });
 
+function LinkIconPair(Icon, link) {
+  if (link) {
+    return (
+      <IconButton color="inherit" href={link}>
+        <Icon />
+      </IconButton>
+    );
+  }
+  return null;
+}
+
 class Footer extends Component {
   render() {
     const { classes, listTypes } = this.props;
@@ -86,37 +98,31 @@ class Footer extends Component {
                 alignItems="flex-start"
                 className={classes.rightSection}
               >
-                <Grid item xs={12}>
-                  <Typography variant="headline" color="inherit" paragraph>
-                    Contact me:
-                  </Typography>
-                  <Typography variant="subheading" color="inherit" paragraph>
-                    <span style={{ verticalAlign: "center" }}>
-                      <IconButton color="inherit">
-                        <Email />
-                      </IconButton>{" "}
-                      MalgrimArt@gmail.com
-                    </span>
-                  </Typography>
-                </Grid>
+                {config.email !== "" ? (
+                  <Grid item xs={12}>
+                    <Typography variant="headline" color="inherit" paragraph>
+                      Contact me:
+                    </Typography>
+                    <Typography variant="subheading" color="inherit" paragraph>
+                      <span style={{ verticalAlign: "center" }}>
+                        <IconButton color="inherit">
+                          <Email />
+                        </IconButton>{" "}
+                        {config.email}
+                      </span>
+                    </Typography>
+                  </Grid>
+                ) : null}
                 <Divider light />
                 <Grid item xs={12}>
                   <Typography variant="headline" color="inherit" paragraph>
                     Follow me:
                   </Typography>
                   <Typography variant="subheading" color="inherit" paragraph>
-                    <IconButton color="inherit">
-                      <Facebook />
-                    </IconButton>
-                    <IconButton color="inherit">
-                      <Instagram />
-                    </IconButton>
-                    <IconButton color="inherit">
-                      <Twitter />
-                    </IconButton>
-                    <IconButton color="inherit">
-                      <Youtube />
-                    </IconButton>
+                    {LinkIconPair(Facebook, config.socialMedia.facebook)}
+                    {LinkIconPair(Youtube, config.socialMedia.youtube)}
+                    {LinkIconPair(Instagram, config.socialMedia.instagram)}
+                    {LinkIconPair(Twitter, config.socialMedia.twitter)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -124,7 +130,7 @@ class Footer extends Component {
             <Grid item xs={12} />
           </Grid>
           <Typography color="inherit" className={classes.copyright}>
-            Copyright ©My Art Website Template 2018 All Rights Reserved{" "}
+            Powered by Glogfolio
           </Typography>
         </div>
       </div>
