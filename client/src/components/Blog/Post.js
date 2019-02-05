@@ -1,15 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, Typography, Paper } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { Editor } from "slate-react";
 import { renderMark, renderNode } from "../RichEditor/renderMethods";
 import { Value } from "slate";
 import { ISOStringToNormalDate } from "../../utils/date";
-import styled from "styled-components";
-
-const PaddedPaper = styled(Paper)`
-  padding: 2rem;
-`;
+import PaddedPaper from "../PaddedPaper/PaddedPaper";
 
 function Post(props) {
   const { deepPost, onClosePost } = props;

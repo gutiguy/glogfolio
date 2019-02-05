@@ -1,8 +1,8 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import { Grid, Typography } from "@material-ui/core";
 import InformationCarousel from "./InformationCarousel/InformationCarousel";
 import config from "../../config.js";
+import PaddedPaper from "../PaddedPaper/PaddedPaper";
 const { homepageParagraphs } = config;
 
 function Home() {
@@ -13,12 +13,14 @@ function Home() {
       </Grid>
       {homepageParagraphs.map((paragraph, index) => (
         <Grid item xs={12} sm={12 / homepageParagraphs.length} key={index}>
-          <Typography variant="h6" paragraph color="textSecondary">
-            {paragraph.title}
-          </Typography>
-          <Typography variant="body1" color="textSecondary">
-            {paragraph.content}
-          </Typography>
+          <PaddedPaper elevation={2}>
+            <Typography variant="h4" paragraph color="textSecondary">
+              {paragraph.title}
+            </Typography>
+            <Typography variant="body1" color="textSecondary">
+              {paragraph.content}
+            </Typography>
+          </PaddedPaper>
         </Grid>
       ))}
     </Grid>
