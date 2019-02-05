@@ -8,14 +8,6 @@ import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import Paper from "@material-ui/core/Paper";
 import * as actions from "../../actions/categoryActions";
-import styled from "styled-components";
-import { withTheme } from "@material-ui/core/styles";
-
-const SelectedMenuItem = withTheme()(styled(MenuItem)`
-  background-color: ${props => props.theme.palette.primary.light} !important;
-  color: #fff;
-  padding: 1000px;
-`);
 
 const DrawerTree = ({ node, path, openPath, onClick, level, ...props }) => {
   let children = null;
@@ -33,18 +25,15 @@ const DrawerTree = ({ node, path, openPath, onClick, level, ...props }) => {
     ));
   }
   const childrenState = openPath.indexOf(node.id) === -1 ? false : true;
-  let RenderMenuItem = MenuItem;
-  if (path[path.length - 1] === openPath[openPath.length - 1]) {
-    RenderMenuItem = SelectedMenuItem;
-  }
   return (
     <React.Fragment>
-      <RenderMenuItem
+      <MenuItem
+        selected={path[path.length - 1] === openPath[openPath.length - 1]}
         style={{ paddingLeft: (level + 1) * 10 + "px" }}
         onClick={() => onClick(node.id, path)}
       >
         <ListItemText primary={node.name} />
-      </RenderMenuItem>
+      </MenuItem>
       <li>
         <Divider />
       </li>
@@ -75,8 +64,8 @@ class CategoryDrawer extends Component {
 
   render() {
     return (
-      <Paper>
-        <MenuList component="nav">
+      <Paper style={{ marginTop: "0.2rem" }}>
+        <MenuList component="nav" style={{ padding: 0 }}>
           {this.props.tree
             ? this.props.tree.map(tree => (
                 <DrawerTree
