@@ -4,17 +4,17 @@ import OutlineHoverButton from "./OutlineHoverButton";
 
 const styles = {
   root: {
-    margin: "0.5rem"
+    margin: "0.4rem"
   }
 };
 
 const ThemeHoverButton = props => {
   return (
-    <Typography color="inherit">
-      <ButtonBase className={props.classes.root}>
+    <ButtonBase className={props.classes.root}>
+      <Typography variant="h6" color="inherit">
         <OutlineHoverButton {...props} />
-      </ButtonBase>
-    </Typography>
+      </Typography>
+    </ButtonBase>
   );
 };
 

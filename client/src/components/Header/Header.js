@@ -18,8 +18,12 @@ import config from "../../config.js";
 
 const styles = theme => ({
   root: {
+    padding: "0.5rem",
     width: theme.desktopWidth,
     margin: "0 auto",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     [theme.breakpoints.down("md")]: {
       width: theme.smallDeviceWidth
     }
@@ -61,10 +65,6 @@ class Header extends React.Component {
       }
     ]
   };
-
-  componentDidMount() {
-    this.props.verifyAdmin();
-  }
 
   handleClickAway = () => {
     this.setState({ menuOpen: false });
@@ -127,7 +127,7 @@ class Header extends React.Component {
             </IconButton>
           </Hidden>
           <Typography
-            variant="headline"
+            variant="h2"
             color="inherit"
             className={this.props.classes.flex}
           >
@@ -166,7 +166,7 @@ Header.defaultProps = {
 };
 const mapStateToProps = state => {
   return {
-    isVerified: state.admin.isVerified
+    isVerified: state.admin.username != null
   };
 };
 

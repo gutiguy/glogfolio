@@ -3,7 +3,6 @@ import { NavLink, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import ThemeHoverButton from "../UI/OutlineHoverButton/ThemeHoverButton";
 import { withStyles } from "@material-ui/core/styles";
-
 const StyledLink = styled(NavLink)`
   text-decoration: none;
   color: #fff;

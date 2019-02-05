@@ -1,18 +1,18 @@
-import React from 'react';
-import { ClickAwayListener } from '@material-ui/core';
-import styled from 'styled-components';
-import CenterToViewport from '../UI/CenterToViewport/CenterToViewport';
-import { NavLink } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import React from "react";
+import { ClickAwayListener } from "@material-ui/core";
+import styled from "styled-components";
+import CenterToViewport from "../UI/CenterToViewport/CenterToViewport";
+import { NavLink } from "react-router-dom";
+import { withStyles } from "@material-ui/core/styles";
 
-const styles = theme => ({
+const styles = () => ({
   root: {
-    zIndex: '1'
+    zIndex: "1"
   },
   active: {
-    fontWeight: 'bold'
+    fontWeight: "bold"
   }
-})
+});
 
 const Menu = styled.ul`
   position: relative;
@@ -28,7 +28,7 @@ const StyledLink = styled(NavLink)`
   text-decoration: none;
   color: #fff;
   text-transform: uppercase;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   font-size: 3rem;
   :hover {
     font-size: 3.5rem;
@@ -37,17 +37,26 @@ const StyledLink = styled(NavLink)`
 
 const VerticalMenu = props => {
   let options = props.navigationOptions.map(option => {
-    return (<li key={option.order}><StyledLink to={option.link} onClick={props.handleClickAway()} exact activeClassName={props.classes.active}>{option.title}</StyledLink></li>);
+    return (
+      <li key={option.order}>
+        <StyledLink
+          to={option.link}
+          onClick={props.handleClickAway()}
+          exact
+          activeClassName={props.classes.active}
+        >
+          {option.title}
+        </StyledLink>
+      </li>
+    );
   });
-  return(
+  return (
     <ClickAwayListener onClickAway={props.handleClickAway()}>
       <CenterToViewport className={props.classes.root}>
-        <Menu>
-          { options }
-        </Menu>
+        <Menu>{options}</Menu>
       </CenterToViewport>
     </ClickAwayListener>
-      );
-}
+  );
+};
 
 export default withStyles(styles)(VerticalMenu);

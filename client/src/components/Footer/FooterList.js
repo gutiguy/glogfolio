@@ -18,7 +18,7 @@ const FooterList = props => {
         {type.lists.map(list => (
           <li key={list.name}>
             <Button
-              variant="flat"
+              variant="text"
               color="inherit"
               size="small"
               href={list.link}

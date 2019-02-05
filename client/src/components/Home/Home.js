@@ -11,8 +11,8 @@ function Home() {
       <Grid item xs={12}>
         <InformationCarousel />
       </Grid>
-      {homepageParagraphs.map(paragraph => (
-        <Grid item xs={12} sm={12 / homepageParagraphs.length}>
+      {homepageParagraphs.map((paragraph, index) => (
+        <Grid item xs={12} sm={12 / homepageParagraphs.length} key={index}>
           <Typography variant="title" paragraph color="textSecondary">
             {paragraph.title}
           </Typography>
