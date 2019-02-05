@@ -119,6 +119,7 @@ class Portfolio extends Component {
                   photos={this.state.currentImages}
                   onClick={this.openLightbox}
                 />
+
                 <Lightbox
                   images={this.state.currentImages}
                   onClose={this.closeLightbox}
@@ -135,9 +136,7 @@ class Portfolio extends Component {
                     onClick={this.setCurrentCategory}
                     tree={this.state.categoryTree}
                   />
-                ) : (
-                  ""
-                )}
+                ) : null}
               </Grid>
             </Grid>
           </Paper>
