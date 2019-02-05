@@ -40,7 +40,7 @@ class Dashboard extends Component {
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            fullWidth
+            variant="fullWidth"
           >
             <Tab label="Artworks" />
             <Tab label="Art Categories" />

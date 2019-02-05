@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button } from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import Edit from "@material-ui/icons/Edit";
 
 const Checkmark = ({ selected }) => (
@@ -69,7 +69,8 @@ const SelectedImage = ({
       className={!photo.selected ? "not-selected" : ""}
     >
       <Checkmark selected={photo.selected ? true : false} />
-      <Button
+
+      <Fab
         style={{
           position: "absolute",
           bottom: "14px",
@@ -77,11 +78,11 @@ const SelectedImage = ({
           zIndex: 6000
         }}
         onClick={photo.openEdit}
-        variant="fab"
         color="secondary"
       >
         <Edit />
-      </Button>
+      </Fab>
+
       <img
         style={
           photo.selected
