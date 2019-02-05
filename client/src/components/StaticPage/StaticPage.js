@@ -4,14 +4,15 @@ import { Typography } from "@material-ui/core";
 import { Editor } from "slate-react";
 import { renderMark, renderNode } from "../RichEditor/renderMethods";
 import { FETCH_PAGES } from "../../graphql/pages";
-import withLoading from "../../hoc/withLoading";
+import { withLoadingAndMount } from "../../hoc/withLoading";
 import { graphql, compose } from "react-apollo";
 import { Value } from "slate";
 
 class StaticPage extends Component {
   render() {
-    const { title, content } = this.props.page;
-    console.log(content);
+    const { pages } = this.props;
+    const { content, title } = pages[0];
+
     let parsedContent = Value.fromJSON(JSON.parse(content));
     return (
       <div>
@@ -33,7 +34,8 @@ StaticPage.propTypes = {
 };
 
 StaticPage.defaultProps = {
-  title: "Page not found"
+  title: "Page not found",
+  content: ""
 };
 
 export default compose(
@@ -43,10 +45,10 @@ export default compose(
         ids: [id]
       }
     }),
-    props: ({ data: { pages, loading } }) => ({
-      page: pages && pages[0],
-      isLoading: loading
+    props: ({ data: { pages }, data: { loading } }) => ({
+      isLoading: loading,
+      pages
     })
   }),
-  withLoading
+  withLoadingAndMount
 )(StaticPage);
