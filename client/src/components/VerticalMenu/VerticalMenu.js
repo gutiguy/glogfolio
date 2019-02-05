@@ -36,20 +36,18 @@ const StyledLink = styled(NavLink)`
 `;
 
 const VerticalMenu = props => {
-  let options = props.navigationOptions.map(option => {
-    return (
-      <li key={option.order}>
-        <StyledLink
-          to={option.link}
-          onClick={props.handleClickAway()}
-          exact
-          activeClassName={props.classes.active}
-        >
-          {option.title}
-        </StyledLink>
-      </li>
-    );
-  });
+  let options = props.navigationOptions.map((option, index) => (
+    <li key={index}>
+      <StyledLink
+        to={"/" + option.link}
+        onClick={props.handleClickAway()}
+        exact
+        activeClassName={props.classes.active}
+      >
+        {option.title}
+      </StyledLink>
+    </li>
+  ));
   return (
     <ClickAwayListener onClickAway={props.handleClickAway()}>
       <CenterToViewport className={props.classes.root}>

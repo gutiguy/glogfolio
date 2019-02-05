@@ -51,17 +51,17 @@ class Header extends React.Component {
       {
         order: 1,
         title: "HOME",
-        link: "/"
+        link: ""
       },
       {
         order: 2,
         title: "PORTFOLIO",
-        link: "/portfolio"
+        link: "portfolio"
       },
       {
         order: 3,
         title: "BLOG",
-        link: "/blog"
+        link: "blog"
       }
     ]
   };
@@ -97,11 +97,11 @@ class Header extends React.Component {
     if (this.props.isVerified) {
       newNavigationOptions.push({
         title: "DASHBOARD",
-        link: "/admin"
+        link: "admin"
       });
       newNavigationOptions.push({
         title: "LOGOUT",
-        link: "/",
+        link: "",
         onClick: this.handleLogOut
       });
     }

@@ -24,7 +24,7 @@ const styles = {
 };
 
 const HorizontalNavigation = props => {
-  const { staticContext, ...rest } = { props };
+  console.log(props.location.pathname);
   return props.options.map(option => {
     let newOption;
     if (option.onClick) {
@@ -35,9 +35,7 @@ const HorizontalNavigation = props => {
       );
     } else {
       newOption =
-        (props.location.pathname.startsWith(option.link) &&
-          option.link !== "/") ||
-        (props.location.pathname === "/" && option.link === "/") ? (
+        option.link === props.location.pathname.substr(1) ? (
           <ThemeHoverButton active key={option.title}>
             {option.title}
           </ThemeHoverButton>
@@ -46,7 +44,6 @@ const HorizontalNavigation = props => {
             to={option.link}
             exact
             activeClassName={props.classes.active}
-            {...rest}
             key={option.title}
           >
             <ThemeHoverButton>{option.title}</ThemeHoverButton>
