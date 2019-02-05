@@ -44,11 +44,7 @@ class Login extends Component {
     const { classes } = this.props;
     return (
       <Paper className={classes.flexCenter}>
-        <Typography
-          variant="headline"
-          className={classes.item}
-          color="textSecondary"
-        >
+        <Typography variant="h5" className={classes.item} color="textSecondary">
           Admin Login Form
         </Typography>
         <TextField

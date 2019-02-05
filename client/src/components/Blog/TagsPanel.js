@@ -3,7 +3,7 @@ import { Typography, Button } from "@material-ui/core";
 export default function TagsPanel({ tags, selectedTags, onAdd, onRemove }) {
   return (
     <div>
-      <Typography variant="subheading">Tags</Typography>
+      <Typography variant="subtitle1">Tags</Typography>
       <Button
         variant={selectedTags.length ? "text" : "contained"}
         onClick={() => {

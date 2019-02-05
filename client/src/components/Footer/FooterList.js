@@ -11,7 +11,7 @@ const FooterList = props => {
   const { type } = props;
   return (
     <React.Fragment>
-      <Typography variant="subheading" color="inherit">
+      <Typography variant="subtitle1" color="inherit">
         {type.name}
       </Typography>
       <StyledList>

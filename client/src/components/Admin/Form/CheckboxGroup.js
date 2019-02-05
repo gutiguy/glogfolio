@@ -32,7 +32,7 @@ export default class CheckboxGroup extends Component {
     ) : null;
     return (
       <React.Fragment>
-        <Typography variant="subheading">{label}</Typography>
+        <Typography variant="subtitle1">{label}</Typography>
         {boxes.map(box => (
           <FormControlLabel
             key={box.id}

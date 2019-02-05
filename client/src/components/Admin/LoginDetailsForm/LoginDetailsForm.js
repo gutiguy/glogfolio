@@ -130,7 +130,7 @@ class LoginDetailsForm extends Component {
                   />
                 ) : (
                   <FormRow>
-                    <Typography variant="title">
+                    <Typography variant="h6">
                       Username: {username}
                       <IconButton
                         onClick={() => this.setState({ editUserName: true })}
@@ -159,7 +159,7 @@ class LoginDetailsForm extends Component {
                   </React.Fragment>
                 ) : (
                   <FormRow>
-                    <Typography variant="title">
+                    <Typography variant="h6">
                       Password: ******
                       <IconButton
                         onClick={() => this.setState({ editPassword: true })}

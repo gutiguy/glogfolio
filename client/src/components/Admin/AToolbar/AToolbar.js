@@ -30,7 +30,7 @@ function AToolbar(props) {
       number = props.numerator;
     }
     barElements.push(
-      <Typography variant="title" key="adminToolbarSelected">
+      <Typography variant="h6" key="adminToolbarSelected">
         {label + ": " + number}
       </Typography>
     );

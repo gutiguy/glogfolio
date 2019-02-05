@@ -8,7 +8,7 @@ const InnerFormTitle = styled(Typography)`
 `;
 
 const FormTitle = ({ children }) => {
-  return <InnerFormTitle variant="headline">{children}</InnerFormTitle>;
+  return <InnerFormTitle variant="h5">{children}</InnerFormTitle>;
 };
 
 export default FormTitle;

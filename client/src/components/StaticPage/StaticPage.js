@@ -15,7 +15,7 @@ class StaticPage extends Component {
     let parsedContent = Value.fromJSON(JSON.parse(content));
     return (
       <div>
-        <Typography variant="headline">{title}</Typography>
+        <Typography variant="h5">{title}</Typography>
         <Editor
           readonly
           value={parsedContent}

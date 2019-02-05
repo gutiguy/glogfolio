@@ -105,7 +105,7 @@ class InformationCarousel extends Component {
             />
           </div>
           <div className={this.props.classes.galleryCard}>
-            <Typography variant="title" paragraph color="inherit">
+            <Typography variant="h6" paragraph color="inherit">
               {slides[this.state.currentIndex].title}
             </Typography>
             <Typography variant="body1" color="inherit">

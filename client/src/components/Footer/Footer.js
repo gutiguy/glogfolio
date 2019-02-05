@@ -100,10 +100,10 @@ class Footer extends Component {
               >
                 {config.email !== "" ? (
                   <Grid item xs={12}>
-                    <Typography variant="headline" color="inherit" paragraph>
+                    <Typography variant="h5" color="inherit" paragraph>
                       Contact me:
                     </Typography>
-                    <Typography variant="subheading" color="inherit" paragraph>
+                    <Typography variant="subtitle1" color="inherit" paragraph>
                       <span style={{ verticalAlign: "center" }}>
                         <IconButton color="inherit">
                           <Email />
@@ -115,10 +115,10 @@ class Footer extends Component {
                 ) : null}
                 <Divider light />
                 <Grid item xs={12}>
-                  <Typography variant="headline" color="inherit" paragraph>
+                  <Typography variant="h5" color="inherit" paragraph>
                     Follow me:
                   </Typography>
-                  <Typography variant="subheading" color="inherit" paragraph>
+                  <Typography variant="subtitle1" color="inherit" paragraph>
                     {LinkIconPair(Facebook, config.socialMediaLinks.facebook)}
                     {LinkIconPair(Youtube, config.socialMediaLinks.youtube)}
                     {LinkIconPair(Instagram, config.socialMediaLinks.instagram)}

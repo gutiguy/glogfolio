@@ -22,6 +22,9 @@ const cache = new InMemoryCache({ fragmentMatcher });
 const client = new ApolloClient({ uri, cache });
 
 const theme = createMuiTheme({
+  typography: {
+    useNextVariants: true
+  },
   palette: {
     primary: {
       main: "#443f46"

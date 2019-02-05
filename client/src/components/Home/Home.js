@@ -13,7 +13,7 @@ function Home() {
       </Grid>
       {homepageParagraphs.map((paragraph, index) => (
         <Grid item xs={12} sm={12 / homepageParagraphs.length} key={index}>
-          <Typography variant="title" paragraph color="textSecondary">
+          <Typography variant="h6" paragraph color="textSecondary">
             {paragraph.title}
           </Typography>
           <Typography variant="body1" color="textSecondary">

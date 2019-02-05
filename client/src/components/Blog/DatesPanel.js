@@ -55,7 +55,7 @@ class DatesPanel extends Component {
 
     return (
       <React.Fragment>
-        <Typography variant="subheading">Filter by Date</Typography>
+        <Typography variant="subtitle1">Filter by Date</Typography>
         <List>
           {Array.from(years, ([year, months]) => (
             <React.Fragment key={year}>

@@ -14,7 +14,7 @@ const renderNode = (props, editor, next) => {
   switch (node.type) {
     case "title":
       return (
-        <Typography variant="headline" {...attributes}>
+        <Typography variant="h5" {...attributes}>
           {children}
         </Typography>
       );
