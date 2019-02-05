@@ -8,8 +8,7 @@ import { FETCH_PAGE_NAVIGATIONS } from "../../graphql/navigation";
 import { graphql, compose } from "react-apollo";
 import withLoading from "../../hoc/withLoading";
 import StaticPage from "../StaticPage/StaticPage";
-
-const Blog = () => <div>Blog</div>;
+import Blog from "../Blog/Blog";
 
 const styles = theme => ({
   root: {

@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const FETCH_POSTS_SHALLOW = gql`
-    query FetchPostsShallow($tags: [ID]) {
-      posts(tags: $tags) {
+    query FetchPostsShallow($tags: [ID], $publishStatus: PublishStatus) {
+      posts(tags: $tags, publishStatus: $publishStatus) {
         id
         title
         summary
