@@ -23,19 +23,17 @@ function Post(props) {
       <Typography variant="subtitle2">
         Posted at {ISOStringToNormalDate(posted_at)}
       </Typography>
-      <Typography variant="body">
-        <Editor
-          readonly
-          value={parsedContent}
-          renderNode={renderNode}
-          renderMark={renderMark}
-          style={{ marginBottom: "1rem", marginTop: "1rem" }}
-        />
-      </Typography>
+      <Editor
+        readonly
+        value={parsedContent}
+        renderNode={renderNode}
+        renderMark={renderMark}
+        style={{ marginBottom: "1rem", marginTop: "1rem" }}
+      />
 
       {tags ? (
         <Typography variant="caption" style={{ marginBottom: "1rem" }}>
-          Tags: {tags}
+          Tags: {tags.map(tag => tag.name)}
         </Typography>
       ) : null}
 
