@@ -1,7 +1,7 @@
 import { VERIFY_ADMIN } from "../actions/types";
 
 const initialState = {
-  isVerified: false
+  username: null
 };
 
 export default (state = initialState, action) => {
@@ -9,7 +9,7 @@ export default (state = initialState, action) => {
     case VERIFY_ADMIN:
       return {
         ...state,
-        isVerified: action.payload.verified
+        username: action.payload.username
       };
     default:
       return state;

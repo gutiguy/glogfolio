@@ -8,6 +8,7 @@ import ACarousel from "./ACarousel";
 import APages from "./APages";
 import ANavigation from "./ANavigation";
 import ABlog from "./ABlog";
+import LoginDetailsForm from "./LoginDetailsForm/LoginDetailsForm";
 
 function TabContainer({ children }) {
   return (
@@ -48,6 +49,7 @@ class Dashboard extends Component {
             <Tab label="Lists" />
             <Tab label="Navigation" />
             <Tab label="Carousel" />
+            <Tab label="Site Meta" />
           </Tabs>
           <SwipeableViews
             index={this.state.value}
@@ -73,6 +75,9 @@ class Dashboard extends Component {
             </TabContainer>
             <TabContainer>
               <ACarousel />
+            </TabContainer>
+            <TabContainer>
+              <LoginDetailsForm />
             </TabContainer>
           </SwipeableViews>
         </Paper>

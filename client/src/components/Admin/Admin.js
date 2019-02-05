@@ -4,34 +4,68 @@ import Login from "./Login";
 import Dashboard from "./Dashboard";
 import * as actions from "../../actions/adminActions";
 import axios from "axios";
+import CustomDialog from "./CustomDialog";
 
 class Admin extends Component {
-  componentDidMount() {
-    this.props.verifyAdmin();
-  }
+  state = {
+    loginRequestStatus: null
+  };
 
   handleLogin = async (username, password) => {
-    await axios.post("/api/login", {
-      username: username,
-      password: password
-    });
-    this.props.verifyAdmin();
+    try {
+      await axios.post("/api/login", {
+        username: username,
+        password: password
+      });
+      this.props.verifyAdmin();
+    } catch (e) {
+      this.setState({ loginRequestStatus: e.response.status });
+    }
+  };
+
+  initState = () => {
+    this.setState({ loginRequestStatus: null });
   };
 
   render() {
-    let whatToRender =
-      this.props.isVerified === true ? (
-        <Dashboard />
-      ) : (
-        <Login handleLogin={this.handleLogin} />
+    const { loginRequestStatus } = this.state;
+
+    if (this.props.isVerified === true) return <Dashboard />;
+    else {
+      let displayDialog = null;
+
+      if (loginRequestStatus === 401) {
+        displayDialog = (
+          <CustomDialog
+            status={loginRequestStatus}
+            title="Failed to login"
+            text="One or more of the supplied fields was wrong."
+            onDismiss={this.initState}
+          />
+        );
+      } else if (loginRequestStatus === 501) {
+        displayDialog = (
+          <CustomDialog
+            status={loginRequestStatus}
+            title="Server Unreachable"
+            text="The request was unable to reach the server. If the problem persists please contact your system administrator."
+            onDismiss={this.initState}
+          />
+        );
+      }
+
+      return (
+        <React.Fragment>
+          {displayDialog} <Login handleLogin={this.handleLogin} />
+        </React.Fragment>
       );
-    return <div>{whatToRender}</div>;
+    }
   }
 }
 
 const mapStateToProps = state => {
   return {
-    isVerified: state.admin.isVerified
+    isVerified: state.admin.username != null
   };
 };
 
