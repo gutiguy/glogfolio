@@ -3,6 +3,7 @@ import { Paper } from "@material-ui/core";
 import styled from "styled-components";
 import TagsPanel from "./TagsPanel";
 import DatesPanel from "./DatesPanel";
+
 const MarginPaper = styled(Paper)`
   margin-top: 1rem;
   padding: 0.5rem;
@@ -14,7 +15,7 @@ export default class BlogSideBar extends Component {
       tags,
       selectedTags,
       onAddTag,
-      onDeleteTag,
+      onRemoveTag,
       selectedMonth,
       selectedYear,
       switchYear,
@@ -32,7 +33,7 @@ export default class BlogSideBar extends Component {
           tags={tags}
           selectedTags={selectedTags}
           onAdd={onAddTag}
-          onDelete={onDeleteTag}
+          onRemove={onRemoveTag}
         />
       </MarginPaper>
     );

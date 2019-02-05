@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { FETCH_POSTS_DATES } from "../../../graphql/blog";
+import { FETCH_POSTS_DATES } from "../../graphql/blog";
 import { graphql } from "react-apollo";
-import withLoading from "../../../hoc/withLoading";
+import withLoading from "../../hoc/withLoading";
 import {
   ListItemText,
   List,

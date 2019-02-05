@@ -130,7 +130,6 @@ class APostForm extends Component {
 }
 
 APostForm.propTypes = {
-  perma: PropTypes.string,
   editedPost: PropTypes.object,
   title: PropTypes.string,
   initialValues: PropTypes.object

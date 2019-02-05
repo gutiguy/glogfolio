@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography, Button } from "@material-ui/core";
-export default function TagsPanel({ tags, selectedTags, onAdd, onDelete }) {
+export default function TagsPanel({ tags, selectedTags, onAdd, onRemove }) {
   return (
     <div>
       <Typography variant="subheading">Tags</Typography>
@@ -8,7 +8,7 @@ export default function TagsPanel({ tags, selectedTags, onAdd, onDelete }) {
         variant={selectedTags.length ? "text" : "contained"}
         onClick={() => {
           selectedTags.forEach(tag => {
-            onDelete(tag);
+            onRemove(tag);
           });
         }}
       >
@@ -18,7 +18,7 @@ export default function TagsPanel({ tags, selectedTags, onAdd, onDelete }) {
         <Button
           key={tag.id}
           onClick={() =>
-            !selectedTags.includes(tag.id) ? onAdd(tag.id) : onDelete(tag.id)
+            !selectedTags.includes(tag.id) ? onAdd(tag.id) : onRemove(tag.id)
           }
           variant={selectedTags.includes(tag.id) ? "contained" : "text"}
         >

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import APosts from "./APosts";
-import BlogSideBar from "./BlogSideBar";
+import BlogSideBar from "../../Blog/BlogSideBar";
 import { Grid, FormControl, Select, MenuItem } from "@material-ui/core";
 import { debounce } from "debounce";
 import AToolbar from "../AToolbar";
@@ -140,6 +140,7 @@ class ABlog extends Component {
   changePublishStatus = e => {
     this.setState({ publishStatus: e.target.value });
   };
+
   render() {
     const {
       addForm,
@@ -232,7 +233,7 @@ class ABlog extends Component {
               tags={tags}
               selectedTags={selectedTags}
               onAddTag={this.addTag}
-              onDeleteTag={this.removeTag}
+              onRemoveTag={this.removeTag}
               selectedYear={selectedYear}
               selectedMonth={selectedMonth}
               switchMonth={this.switchMonth}
