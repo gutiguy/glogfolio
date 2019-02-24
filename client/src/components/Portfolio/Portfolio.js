@@ -38,6 +38,7 @@ class Portfolio extends Component {
         caption: name + ": " + description
       };
     });
+
     this.setState({
       images,
       currentImages: [...images],
@@ -64,30 +65,33 @@ class Portfolio extends Component {
     });
   };
 
-  openLightbox = (event, obj) => {
+  openLightbox = (_, obj) => {
     this.setState({
       currentImage: obj.index,
       lightboxIsOpen: true
     });
   };
+
   closeLightbox = () => {
     this.setState({
       currentImage: 0,
       lightboxIsOpen: false
     });
   };
+
   gotoPrevious = () => {
     this.setState({
       currentImage: this.state.currentImage - 1
     });
   };
+
   gotoNext = () => {
     this.setState({
       currentImage: this.state.currentImage + 1
     });
   };
 
-  handleCategoryChange = (event, value) => {
+  handleCategoryChange = (_, value) => {
     if (value === -1) {
       this.setCurrentCategory(null);
       this.setState({ categoryTree: null, tab: value });
@@ -101,6 +105,8 @@ class Portfolio extends Component {
   };
 
   render() {
+    const { categoryTree } = this.state;
+
     return (
       <div>
         <Paper>
@@ -114,7 +120,7 @@ class Portfolio extends Component {
           </Tabs>
           <Paper>
             <Grid container>
-              <Grid item xs={9}>
+              <Grid item xs={categoryTree ? 9 : 12}>
                 <Gallery
                   photos={this.state.currentImages}
                   onClick={this.openLightbox}
@@ -130,14 +136,14 @@ class Portfolio extends Component {
                   showImageCount={false}
                 />
               </Grid>
-              <Grid item xs>
-                {this.state.categoryTree ? (
+              {categoryTree ? (
+                <Grid item xs>
                   <CategoryDrawer
                     onClick={this.setCurrentCategory}
-                    tree={this.state.categoryTree}
+                    tree={categoryTree}
                   />
-                ) : null}
-              </Grid>
+                </Grid>
+              ) : null}
             </Grid>
           </Paper>
         </Paper>
