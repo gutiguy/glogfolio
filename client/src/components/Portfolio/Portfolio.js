@@ -7,21 +7,22 @@ import CategoryDrawer from "../CategoryDrawer/CategoryDrawer";
 import * as actions from "../../actions/categoryActions";
 import Grid from "@material-ui/core/Grid";
 import Lightbox from "react-images";
+import { StyledLoader } from "../../hoc/withLoading";
 
 const { REACT_APP_AWS_BUCKET_URI } = process.env;
 
 class Portfolio extends Component {
   state = {
     images: [],
-    currentImages: [],
-    categoryTree: null,
-    tree: null,
     currentImage: 0,
+    currentCategory: null,
+    tree: null,
     tab: -1
   };
 
   async componentDidMount() {
     await this.props.loadCategories();
+
     const requestImages = await axios.get("/api/artworks");
     const images = requestImages.data.map((image, index) => {
       let { image_key, description, name, ...otherProps } = image;
@@ -41,29 +42,9 @@ class Portfolio extends Component {
 
     this.setState({
       images,
-      currentImages: [...images],
-      tree: this.props.categoryTree,
-      categoryTree: null
+      tree: this.props.categoryTree
     });
   }
-
-  setCurrentCategory = clickedCategory => {
-    let currentImages = [];
-    let images = this.state.images;
-    if (clickedCategory) {
-      images.forEach(image => {
-        if (image.categories.indexOf(clickedCategory) !== -1) {
-          currentImages.push({ ...image });
-        }
-      });
-    } else {
-      currentImages = images;
-    }
-
-    this.setState({
-      currentImages
-    });
-  };
 
   openLightbox = (_, obj) => {
     this.setState({
@@ -91,43 +72,53 @@ class Portfolio extends Component {
     });
   };
 
-  handleCategoryChange = (_, value) => {
-    if (value === -1) {
-      this.setCurrentCategory(null);
-      this.setState({ categoryTree: null, tab: value });
-    } else {
-      this.setCurrentCategory(this.state.tree[value].id);
-      this.setState({
-        categoryTree: this.state.tree[value].children,
-        tab: value
-      });
-    }
+  setCurrentCategory = value => {
+    const { tab, tree } = this.state;
+
+    this.setState({
+      currentCategory: value === null ? tree[tab].id : value
+    });
+  };
+
+  setCurrentTab = (_, tab) => {
+    this.setState({
+      tab,
+      currentCategory: tab === -1 ? null : this.state.tree[tab].id
+    });
   };
 
   render() {
-    const { categoryTree } = this.state;
+    const { currentCategory, images, tree, tab } = this.state;
+    let currentImages = [];
+
+    if (currentCategory !== null) {
+      currentImages = images.filter(
+        image => image.categories.indexOf(currentCategory) !== -1
+      );
+    } else {
+      currentImages = images;
+    }
+
+    if (!tree) {
+      return <StyledLoader />;
+    }
 
     return (
       <div>
         <Paper>
-          <Tabs value={this.state.tab} onChange={this.handleCategoryChange}>
+          <Tabs value={tab} onChange={this.setCurrentTab}>
             <Tab label="All Work" value={-1} key={-1} />
-            {this.state.tree
-              ? this.state.tree.map((tree, index) => {
-                  return <Tab label={tree.name} value={index} key={index} />;
-                })
-              : "loading"}
+            {tree.map((topNode, index) => (
+              <Tab label={topNode.name} value={index} key={topNode.id} />
+            ))}
           </Tabs>
           <Paper>
             <Grid container>
-              <Grid item xs={categoryTree ? 9 : 12}>
-                <Gallery
-                  photos={this.state.currentImages}
-                  onClick={this.openLightbox}
-                />
+              <Grid item xs={currentCategory ? 9 : 12}>
+                <Gallery photos={currentImages} onClick={this.openLightbox} />
 
                 <Lightbox
-                  images={this.state.currentImages}
+                  images={currentImages}
                   onClose={this.closeLightbox}
                   onClickPrev={this.gotoPrevious}
                   onClickNext={this.gotoNext}
@@ -136,11 +127,11 @@ class Portfolio extends Component {
                   showImageCount={false}
                 />
               </Grid>
-              {categoryTree ? (
+              {tab !== -1 && tree[tab].children ? (
                 <Grid item xs>
                   <CategoryDrawer
                     onClick={this.setCurrentCategory}
-                    tree={categoryTree}
+                    tree={tree[tab].children}
                   />
                 </Grid>
               ) : null}
