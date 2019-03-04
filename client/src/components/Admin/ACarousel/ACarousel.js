@@ -4,6 +4,8 @@ import ATable, { injectButtons } from "../ATable";
 import AToolbar from "../AToolbar";
 import ACarouselForm from "./ACarouselForm";
 
+const { REACT_APP_BACKEND_URL } = process.env;
+
 class ACarousel extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +19,7 @@ class ACarousel extends Component {
   }
 
   async componentDidMount() {
-    const nodes = await axios.get("/api/carousels");
+    const nodes = await axios.get(REACT_APP_BACKEND_URL + "/api/carousels");
 
     if (nodes.status !== 200) {
       console.log(
@@ -36,7 +38,10 @@ class ACarousel extends Component {
     for (const [key, value] of Object.entries(formEntries)) {
       formData.append(key, value);
     }
-    const response = await axios.post("/api/carousels/add", formData);
+    const response = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/carousels/add",
+      formData
+    );
     const newCarousel = {
       ...values,
       id: response.data.id,
@@ -51,12 +56,15 @@ class ACarousel extends Component {
 
   submitEdit = async node => {
     const { id, url, title, description } = node;
-    const req = await axios.post("/api/carousels/edit", {
-      title,
-      description,
-      id,
-      url
-    });
+    const req = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/carousels/edit",
+      {
+        title,
+        description,
+        id,
+        url
+      }
+    );
     if (req.status === 200) {
       const { nodes } = this.state;
       let index = nodes.map(el => el.id).indexOf(node.id);
@@ -93,10 +101,13 @@ class ACarousel extends Component {
     }
 
     // If moved to
-    const req = await axios.post("/api/carousels/reorder", {
-      putAfter,
-      currentId
-    });
+    const req = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/carousels/reorder",
+      {
+        putAfter,
+        currentId
+      }
+    );
     if (req.status === 200) {
       const movedNode = nodes[oldIndex];
       let reorderedNodes = [...nodes];
@@ -121,9 +132,12 @@ class ACarousel extends Component {
 
   handleDelete = async ids => {
     const { selectedNodes, nodes } = this.state;
-    const deleteCarousels = await axios.post("/api/carousels/delete", {
-      selectedNodes
-    });
+    const deleteCarousels = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/carousels/delete",
+      {
+        selectedNodes
+      }
+    );
 
     if (deleteCarousels !== typeof "undefined") {
       let newNodes = nodes.filter(

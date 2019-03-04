@@ -10,6 +10,7 @@ import Lightbox from "react-images";
 import { StyledLoader } from "../../hoc/withLoading";
 
 const { REACT_APP_AWS_BUCKET_URI } = process.env;
+const { REACT_APP_BACKEND_URL } = process.env;
 
 class Portfolio extends Component {
   state = {
@@ -23,7 +24,9 @@ class Portfolio extends Component {
   async componentDidMount() {
     await this.props.loadCategories();
 
-    const requestImages = await axios.get("/api/artworks");
+    const requestImages = await axios.get(
+      REACT_APP_BACKEND_URL + "/api/artworks"
+    );
     const images = requestImages.data.map((image, index) => {
       let { image_key, description, name, ...otherProps } = image;
       let getDimensinos = image_key.match(/(\d+)x(\d+)\.jpe?g$/i);

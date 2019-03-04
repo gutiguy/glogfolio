@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import SelectedImage from "../SelectedImage";
 
 const { REACT_APP_AWS_BUCKET_URI } = process.env;
+const { REACT_APP_BACKEND_URL } = process.env;
 
 class APortfolio extends Component {
   state = {
@@ -28,7 +29,9 @@ class APortfolio extends Component {
 
   async componentDidMount() {
     await this.props.loadCategories();
-    const requestImages = await axios.get("/api/artworks");
+    const requestImages = await axios.get(
+      REACT_APP_BACKEND_URL + "/api/artworks"
+    );
     const images = requestImages.data.map((image, index) => {
       let { image_key, ...otherProps } = image;
       let getDimensinos = image_key.match(/(\d+)x(\d+)\.jpe?g$/i);
@@ -69,9 +72,12 @@ class APortfolio extends Component {
   };
 
   handleDelete = async () => {
-    const request = await axios.post("/api/artworks/delete", {
-      selectedImages: this.state.selectedImages
-    });
+    const request = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/artworks/delete",
+      {
+        selectedImages: this.state.selectedImages
+      }
+    );
     let newImages = [...this.state.images];
     let newImagesIndexes = newImages.map(image => image.id);
     let currentImages = [...this.state.currentImages];
@@ -101,14 +107,19 @@ class APortfolio extends Component {
   };
 
   handleAdd = async (values, image, _) => {
-    const request = await axios.post("/api/artworks/add", {
-      ...values,
-      width: image.width,
-      height: image.height
-    });
+    const request = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/artworks/add",
+      {
+        ...values,
+        width: image.width,
+        height: image.height
+      }
+    );
 
     const uploadConfig = await axios.get(
-      "/api/upload?folder=portfolio&key=" + request.data.key
+      REACT_APP_BACKEND_URL +
+        "/api/upload?folder=portfolio&key=" +
+        request.data.key
     );
     await axios.put(uploadConfig.data.url, image.file, {
       headers: { "Content-Type": image.type }
@@ -118,12 +129,15 @@ class APortfolio extends Component {
   };
 
   handleEdit = async ({ id, name, description, selectedCategories }) => {
-    const request = await axios.post("/api/artworks/edit", {
-      id,
-      name,
-      description,
-      selectedCategories
-    });
+    const request = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/artworks/edit",
+      {
+        id,
+        name,
+        description,
+        selectedCategories
+      }
+    );
     if (request.status === 200) {
       console.log("Edited successfully");
     } else {

@@ -45,7 +45,7 @@
     "yup": "^0.26.10"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run build && node server.js",
     "build": "react-scripts build",
     "fragments": "node fetchFragments",
     "fragments-build": "node fetchFragments && react-scripts start",

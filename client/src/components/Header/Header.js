@@ -15,6 +15,8 @@ import { graphql } from "react-apollo";
 import * as actions from "../../actions/adminActions";
 import config from "../../config.js";
 
+const { REACT_APP_BACKEND_URL } = process.env;
+
 const styles = theme => ({
   root: {
     padding: "0.5rem",
@@ -70,7 +72,7 @@ class Header extends React.Component {
   };
 
   handleLogOut = async () => {
-    const res = await axios.post("/api/logout");
+    const res = await axios.post(REACT_APP_BACKEND_URL + "/api/logout");
     if (res) {
       this.props.verifyAdmin();
     } else {

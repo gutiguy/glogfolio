@@ -10,6 +10,8 @@ import ValidatePasswordForm from "./ValidatePasswordForm";
 import axios from "axios";
 import CustomDialog from "../CustomDialog";
 
+const { REACT_APP_BACKEND_URL } = process.env;
+
 class LoginDetailsForm extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +41,10 @@ class LoginDetailsForm extends Component {
       changeObject = { ...changeObject, newPassword: values.newpassword };
     }
 
-    const res = await axios.post("/api/admin/change_info", changeObject);
+    const res = await axios.post(
+      REACT_APP_BACKEND_URL + "/api/admin/change_info",
+      changeObject
+    );
     this.setState({ ...this.initialState, requestStatus: res.status });
   };
 

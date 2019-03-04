@@ -6,7 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import "react-image-gallery/styles/css/image-gallery.css";
 import axios from "axios";
 import ImageGallery from "react-image-gallery";
+
 const { REACT_APP_AWS_BUCKET_URI } = process.env;
+const { REACT_APP_BACKEND_URL } = process.env;
 
 const CardLink = styled.a`
   color: #fff;
@@ -47,7 +49,7 @@ class InformationCarousel extends Component {
   };
 
   async componentDidMount() {
-    const reqNodes = await axios.get("/api/carousels");
+    const reqNodes = await axios.get(REACT_APP_BACKEND_URL + "/api/carousels");
     if (reqNodes.status === 200) {
       const nodes = await reqNodes;
       const slides = nodes.data.map(node => {

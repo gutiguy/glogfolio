@@ -6,6 +6,8 @@ import * as actions from "../../actions/adminActions";
 import axios from "axios";
 import CustomDialog from "./CustomDialog";
 
+const { REACT_APP_BACKEND_URL } = process.env;
+
 class Admin extends Component {
   state = {
     loginRequestStatus: null
@@ -13,7 +15,7 @@ class Admin extends Component {
 
   handleLogin = async (username, password) => {
     try {
-      await axios.post("/api/login", {
+      await axios.post(REACT_APP_BACKEND_URL + "/api/login", {
         username: username,
         password: password
       });
