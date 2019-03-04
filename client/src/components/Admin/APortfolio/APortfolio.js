@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-
+import CustomDialog from "../CustomDialog";
 import AToolbar from "../AToolbar";
 import APortfolioForm from "./APortfolioForm";
 import Gallery from "react-photo-gallery";
@@ -22,7 +22,8 @@ class APortfolio extends Component {
     currentImages: [],
     currentlyEditing: null,
     selectedImages: {},
-    tree: null
+    tree: null,
+    requestStatus: null
   };
 
   async componentDidMount() {
@@ -43,6 +44,7 @@ class APortfolio extends Component {
         openEdit: () => this.openEdit(image)
       };
     });
+
     this.setState({
       images,
       currentImages: [...images],
@@ -54,7 +56,7 @@ class APortfolio extends Component {
     this.setState({ currentlyEditing: image });
   };
 
-  selectImage = (event, obj) => {
+  selectImage = (_, obj) => {
     let selectedImages = { ...this.state.selectedImages };
     let currentImages = [...this.state.currentImages];
     currentImages[obj.index].selected = !currentImages[obj.index].selected;
@@ -67,7 +69,7 @@ class APortfolio extends Component {
   };
 
   handleDelete = async () => {
-    await axios.post("/api/artworks/delete", {
+    const request = await axios.post("/api/artworks/delete", {
       selectedImages: this.state.selectedImages
     });
     let newImages = [...this.state.images];
@@ -75,11 +77,15 @@ class APortfolio extends Component {
     let currentImages = [...this.state.currentImages];
     let currentImagesIndexes = currentImages.map(image => image.id);
     Object.keys(this.state.selectedImages).forEach(id => {
-      console.log(id);
       newImages.splice(newImagesIndexes.indexOf(parseInt(id, 10)), 1);
       currentImages.splice(currentImagesIndexes.indexOf(parseInt(id, 10)), 1);
     });
-    this.setState({ images: newImages, currentImages, selectedImages: {} });
+    this.setState({
+      images: newImages,
+      currentImages,
+      selectedImages: {},
+      requestStatus: request.status
+    });
   };
 
   handleSelect = async node => {
@@ -94,7 +100,7 @@ class APortfolio extends Component {
     this.setState({ selectedNodes: newSelected });
   };
 
-  handleAdd = async (values, image, bag) => {
+  handleAdd = async (values, image, _) => {
     const request = await axios.post("/api/artworks/add", {
       ...values,
       width: image.width,
@@ -102,17 +108,13 @@ class APortfolio extends Component {
     });
 
     const uploadConfig = await axios.get(
-      "api/upload?folder=portfolio&key=" + request.data.key
+      "/api/upload?folder=portfolio&key=" + request.data.key
     );
     await axios.put(uploadConfig.data.url, image.file, {
       headers: { "Content-Type": image.type }
     });
-    if (request.status === 200) {
-      console.log("Photo Added");
-    } else {
-      console.log("Problem adding category");
-    }
-    this.setState({ addForm: false });
+
+    this.setState({ addForm: false, requestStatus: request.status });
   };
 
   handleEdit = async ({ id, name, description, selectedCategories }) => {
@@ -127,7 +129,7 @@ class APortfolio extends Component {
     } else {
       console.log("problem");
     }
-    this.setState({ currentlyEditing: null });
+    this.setState({ currentlyEditing: null, requestStatus: request.status });
   };
 
   setCurrentCategory = clickedCategory => {
@@ -153,8 +155,37 @@ class APortfolio extends Component {
   };
 
   render() {
+    let displayDialog = null;
+    const { requestStatus } = this.state;
+
+    if (requestStatus != null) {
+      if (requestStatus === 200)
+        displayDialog = (
+          <CustomDialog
+            title="Success!"
+            text="Operation finished successfully."
+            onDismiss={() => {
+              this.setState({ requestStatus: null });
+            }}
+            status={requestStatus}
+          />
+        );
+      else {
+        displayDialog = (
+          <CustomDialog
+            title="Oops!"
+            text="There was an issue finishing this operation. If the problem persists please contact your system administrator."
+            onDismiss={() => {
+              this.setState({ requestStatus: null });
+            }}
+            status={requestStatus}
+          />
+        );
+      }
+    }
     return (
       <React.Fragment>
+        {displayDialog}
         <AToolbar
           onAdd={() => this.setState({ addForm: true })}
           onDelete={this.handleDelete}
@@ -173,7 +204,7 @@ class APortfolio extends Component {
           <APortfolioForm
             title={"Edit " + this.state.currentlyEditing.name}
             onClose={() => this.setState({ currentlyEditing: null })}
-            submitLabel="Edit Image"
+            submitLabel="Submit Changes"
             onSubmit={this.handleEdit}
             initialValues={this.state.currentlyEditing}
           />
