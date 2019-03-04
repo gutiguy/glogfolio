@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
 const FormRow = styled.div`
-  width: 80%;
+  width: ${props => props.width || 80}%;
+  text-align: ${props => (props.centerContent ? "center" : "left")};
   margin: 1rem auto;
   min-height: ;4rem;
 `;
