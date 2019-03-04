@@ -129,7 +129,7 @@ class LoginDetailsForm extends Component {
                     errorOnTouch
                   />
                 ) : (
-                  <FormRow>
+                  <FormRow centerContent>
                     <Typography variant="h6">
                       Username: {username}
                       <IconButton
@@ -158,7 +158,7 @@ class LoginDetailsForm extends Component {
                     />
                   </React.Fragment>
                 ) : (
-                  <FormRow>
+                  <FormRow width={50} centerContent>
                     <Typography variant="h6">
                       Password: ******
                       <IconButton

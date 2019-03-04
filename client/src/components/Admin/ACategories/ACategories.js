@@ -169,11 +169,15 @@ class ACategories extends Component {
                 subtitle: node.description,
                 buttons: [
                   <Button
+                    size="small"
                     onClick={() => this.setState({ currentlyEditing: node })}
+                    style={{ marginTop: "10px" }}
                   >
-                    <Edit>edit_icon</Edit>
+                    <Edit fontSize="small">edit_icon</Edit>
                   </Button>,
                   <Button
+                    style={{ marginTop: "10px" }}
+                    size="small"
                     onClick={() =>
                       this.setState({
                         addForm: true,
@@ -181,7 +185,7 @@ class ACategories extends Component {
                       })
                     }
                   >
-                    <Add>add_icon</Add>
+                    <Add fontSize="small">add_icon</Add>
                   </Button>,
                   <Checkbox
                     checked={node.checked}
