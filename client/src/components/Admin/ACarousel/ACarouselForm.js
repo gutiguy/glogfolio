@@ -126,7 +126,10 @@ class ACarouselForm extends Component {
         <FormTitle gutterBottom>{title}</FormTitle>
         <Formik
           onSubmit={this.onSubmit}
-          initialValues={initialValues}
+          initialValues={{
+            ...initialValues,
+            url: initialValues.url ? initialValues.url : ""
+          }}
           validate={this.customValidation}
         >
           {({ setFieldTouched }) => {
@@ -182,7 +185,8 @@ ACarouselForm.defaultProps = {
   initialValues: {
     title: "",
     description: "",
-    image: null
+    image: null,
+    url: ""
   },
   submitLabel: "Submit"
 };
