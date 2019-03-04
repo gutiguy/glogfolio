@@ -6,17 +6,23 @@ import { renderMark, renderNode } from "../RichEditor/renderMethods";
 import { Value } from "slate";
 import { ISOStringToNormalDate } from "../../utils/date";
 import PaddedPaper from "../PaddedPaper/PaddedPaper";
+import { StyledLoader } from "../../hoc/withLoading";
 
 function Post(props) {
   const { deepPost, onClosePost } = props;
   const { posts } = deepPost;
+
+  if (!posts) {
+    return <StyledLoader />;
+  }
+
   const { content, title, posted_at, tags } = posts[0];
   const parsedContent = Value.fromJSON(JSON.parse(content));
 
   return (
     <PaddedPaper>
-      <Typography variant="display1">{title}</Typography>
-      <Typography variant="subtitle2">
+      <Typography variant="h4">{title}</Typography>
+      <Typography variant="subtitle1">
         Posted at {ISOStringToNormalDate(posted_at)}
       </Typography>
       <Editor
@@ -27,7 +33,7 @@ function Post(props) {
         style={{ marginBottom: "1rem", marginTop: "1rem" }}
       />
 
-      {tags ? (
+      {tags.length ? (
         <Typography variant="caption" style={{ marginBottom: "1rem" }}>
           Tags: {tags.map(tag => tag.name)}
         </Typography>

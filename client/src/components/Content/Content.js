@@ -6,7 +6,6 @@ import Portfolio from "../Portfolio/Portfolio";
 import Admin from "../Admin/Admin";
 import { FETCH_PAGE_NAVIGATIONS } from "../../graphql/navigation";
 import { graphql, compose } from "react-apollo";
-import withLoading from "../../hoc/withLoading";
 import StaticPage from "../StaticPage/StaticPage";
 import Blog from "../Blog/Blog";
 
@@ -46,10 +45,8 @@ export default compose(
     props: ({ data }) => {
       let navigations = data.navigations || [];
       return {
-        staticPages: navigations.map(navigation => navigation.page),
-        isLoading: data.loading
+        staticPages: navigations.map(navigation => navigation.page)
       };
     }
-  }),
-  withLoading
+  })
 )(Content);

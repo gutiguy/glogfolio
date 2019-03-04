@@ -8,7 +8,6 @@ import FooterList from "./FooterList";
 import { graphql, compose } from "react-apollo";
 import gql from "graphql-tag";
 
-import withLoading from "../../hoc/withLoading";
 import config from "../../config.js";
 
 const FETCH_LISTS = gql`
@@ -72,15 +71,12 @@ function LinkIconPair(Icon, link) {
 class Footer extends Component {
   render() {
     const { classes, listTypes } = this.props;
-    const lists = listTypes.map(type => {
-      return type ? (
-        <Grid item xs={12} sm={4} key={type.id}>
-          <FooterList type={type} />
-        </Grid>
-      ) : (
-        "Loading"
-      );
-    });
+
+    const lists = listTypes.map(type => (
+      <Grid item xs={12} sm={4} key={type.id}>
+        <FooterList type={type} />
+      </Grid>
+    ));
 
     return (
       <div className={classes.footerContainer}>
@@ -141,6 +137,7 @@ class Footer extends Component {
 Footer.defaultProps = {
   listTypes: []
 };
+
 export default compose(
   graphql(FETCH_LISTS, {
     props: ({ data: { listTypes, loading } }) => ({
@@ -148,6 +145,5 @@ export default compose(
       isLoading: loading
     })
   }),
-  withLoading,
   withStyles(styles)
 )(Footer);

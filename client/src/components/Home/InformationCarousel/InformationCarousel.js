@@ -6,7 +6,6 @@ import Typography from "@material-ui/core/Typography";
 import "react-image-gallery/styles/css/image-gallery.css";
 import axios from "axios";
 import ImageGallery from "react-image-gallery";
-
 const { REACT_APP_AWS_BUCKET_URI } = process.env;
 
 const CardLink = styled.a`
@@ -84,7 +83,7 @@ class InformationCarousel extends Component {
   render() {
     const { slides } = this.state;
     if (!slides.length) {
-      return <div>Loading!</div>;
+      return null;
     } else {
       return (
         <div className={this.props.classes.root}>

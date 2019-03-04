@@ -8,28 +8,24 @@ import {
   FETCH_POST_DEEP,
   FETCH_TAGS
 } from "../../graphql/blog";
-import withLoading, { withLoadingAndMount } from "../../hoc/withLoading";
+import withLoading from "../../hoc/withLoading";
 import { graphql, compose } from "react-apollo";
 import { getYear, getMonth } from "date-fns";
 import { debounce } from "debounce";
 
 const LoadedPosts = withLoading(Posts);
 
-const LoadedPost = compose(
-  graphql(FETCH_POST_DEEP, {
-    name: "deepPost",
-    options: ({ id }) => ({
-      variables: {
-        ids: [id]
-      }
-    }),
-    props: ({ deepPost, deepPost: { loading } }) => ({
-      deepPost,
-      isLoading: loading
-    })
+const LoadedPost = graphql(FETCH_POST_DEEP, {
+  name: "deepPost",
+  options: ({ id }) => ({
+    variables: {
+      ids: [id]
+    }
   }),
-  withLoadingAndMount
-)(Post);
+  props: ({ deepPost }) => ({
+    deepPost
+  })
+})(Post);
 
 class Blog extends Component {
   constructor(props) {

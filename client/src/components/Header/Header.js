@@ -13,7 +13,6 @@ import axios from "axios";
 import { FETCH_NAVIGATIONS_FOR_INTERFACE } from "../../graphql/navigation";
 import { graphql } from "react-apollo";
 import * as actions from "../../actions/adminActions";
-import withLoading from "../../hoc/withLoading";
 import config from "../../config.js";
 
 const styles = theme => ({
@@ -164,6 +163,7 @@ class Header extends React.Component {
 Header.defaultProps = {
   navigations: []
 };
+
 const mapStateToProps = state => {
   return {
     isVerified: state.admin.username != null
@@ -182,7 +182,6 @@ export default withRouter(
         isLoading: loading,
         navigations
       })
-    }),
-    withLoading
+    })
   )(Header)
 );
