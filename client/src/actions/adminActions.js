@@ -5,7 +5,7 @@ const { REACT_APP_BACKEND_URL } = process.env;
 
 export const verifyAdmin = () => async dispatch => {
   const res = await axios
-    .get(REACT_APP_BACKEND_URL + "api/current_user")
+    .get(REACT_APP_BACKEND_URL + "/api/current_user")
     .catch(err => console.log(err));
 
   let username = null;
