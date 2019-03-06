@@ -17,7 +17,7 @@
     "http-proxy-middleware": "^0.19.1",
     "immutable": "^4.0.0-rc.12",
     "is-hotkey": "^0.1.4",
-    "lodash": "^4.17.11",
+    "lodash": ">=4.17.11",
     "material-ui-formik-components": "^0.1.3",
     "mdi-material-ui": "^5.9.0",
     "prop-types": "^15.6.2",
@@ -30,7 +30,7 @@
     "react-photo-gallery": "^6.3.1",
     "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.3",
+    "react-scripts": "^2.1.5",
     "react-select": "^2.3.0",
     "react-sortable-hoc": "^0.8.4",
     "react-sortable-tree": "^2.6.0",
@@ -45,6 +45,7 @@
     "yup": "^0.26.10"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "npm run build && node server.js",
     "build": "react-scripts build",
     "fragments": "node fetchFragments",
