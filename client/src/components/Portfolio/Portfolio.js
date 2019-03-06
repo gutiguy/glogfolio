@@ -1,16 +1,13 @@
 import React, { Component } from "react";
 import { Tabs, Tab, Paper } from "@material-ui/core";
 import { connect } from "react-redux";
-import axios from "axios";
 import Gallery from "react-photo-gallery";
 import CategoryDrawer from "../CategoryDrawer/CategoryDrawer";
 import * as actions from "../../actions/categoryActions";
 import Grid from "@material-ui/core/Grid";
 import Lightbox from "react-images";
 import { StyledLoader } from "../../hoc/withLoading";
-
-const { REACT_APP_AWS_BUCKET_URI } = process.env;
-const { REACT_APP_BACKEND_URL } = process.env;
+import fetchImages from "../../utils/fetchImages";
 
 class Portfolio extends Component {
   state = {
@@ -24,25 +21,8 @@ class Portfolio extends Component {
   async componentDidMount() {
     await this.props.loadCategories();
 
-    const requestImages = await axios.get(
-      REACT_APP_BACKEND_URL + "/api/artworks"
-    );
-    const images = requestImages.data.map((image, index) => {
-      let { image_key, description, name, ...otherProps } = image;
-      let getDimensinos = image_key.match(/(\d+)x(\d+)\.jpe?g$/i);
-      let [, width, height] = getDimensinos;
-      return {
-        image_key: "portfolio/" + image_key,
-        src: REACT_APP_AWS_BUCKET_URI + "/portfolio/" + image.image_key,
-        ...otherProps,
-        width: parseInt(width, 10),
-        height: parseInt(height, 10),
-        key: image.id,
-        index,
-        caption: name + ": " + description
-      };
-    });
-
+    const images = await fetchImages();
+    console.log(images);
     this.setState({
       images,
       tree: this.props.categoryTree

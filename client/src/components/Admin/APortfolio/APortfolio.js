@@ -9,8 +9,8 @@ import { connect } from "react-redux";
 import * as actions from "../../../actions/categoryActions";
 import Grid from "@material-ui/core/Grid";
 import SelectedImage from "../SelectedImage";
+import fetchImages from "../../../utils/fetchImages";
 
-const { REACT_APP_AWS_BUCKET_URI } = process.env;
 const { REACT_APP_BACKEND_URL } = process.env;
 
 class APortfolio extends Component {
@@ -29,24 +29,8 @@ class APortfolio extends Component {
 
   async componentDidMount() {
     await this.props.loadCategories();
-    const requestImages = await axios.get(
-      REACT_APP_BACKEND_URL + "/api/artworks"
-    );
-    const images = requestImages.data.map((image, index) => {
-      let { image_key, ...otherProps } = image;
-      let getDimensinos = image_key.match(/(\d+)x(\d+)\.jpe?g$/i);
-      let [, width, height] = getDimensinos;
-      return {
-        image_key: "portfolio/" + image_key,
-        src: REACT_APP_AWS_BUCKET_URI + "/portfolio/" + image.image_key,
-        ...otherProps,
-        width: parseInt(width, 10),
-        height: parseInt(height, 10),
-        key: image.id,
-        index,
-        openEdit: () => this.openEdit(image)
-      };
-    });
+
+    const images = await fetchImages();
 
     this.setState({
       images,
