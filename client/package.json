@@ -46,7 +46,8 @@
   },
   "scripts": {
     "dev": "react-scripts start",
-    "start": "npm run build && node server.js",
+    "start": "node server.js",
+    "heroku-postbuild": "npm run build",
     "build": "react-scripts build",
     "fragments": "node fetchFragments",
     "fragments-build": "node fetchFragments && react-scripts start",
