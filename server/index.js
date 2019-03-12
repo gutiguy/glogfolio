@@ -14,9 +14,7 @@ const knex = require("./db/knex");
 Model.knex(knex);
 const apollo = require("./graphql/server");
 
-apollo.listen(APOLLO_PORT || 5000).then(({ url }) => {
-  console.log(`Apollo server ready at ${url}`);
-});
+apollo.applyMiddleware({ app });
 
 app.use(
   session({ secret: SESSION_SECRET, saveUninitialized: false, resave: true })

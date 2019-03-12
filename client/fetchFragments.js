@@ -3,7 +3,7 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const { REACT_APP_APOLLO_CLIENT_URI: uri } = process.env;
+const { REACT_APP_BACKEND_URL: uri } = process.env;
 
 fetch(`${uri}`, {
   method: "POST",

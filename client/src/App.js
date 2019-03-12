@@ -12,14 +12,14 @@ import { ApolloProvider } from "react-apollo";
 import { IntrospectionFragmentMatcher } from "apollo-cache-inmemory";
 import introspectionQueryResultData from "./fragmentTypes.json";
 
-const { REACT_APP_APOLLO_CLIENT_URI: uri } = process.env;
+const { REACT_APP_BACKEND_URL: uri } = process.env;
 
 const fragmentMatcher = new IntrospectionFragmentMatcher({
   introspectionQueryResultData
 });
 
 const cache = new InMemoryCache({ fragmentMatcher });
-const client = new ApolloClient({ uri, cache });
+const client = new ApolloClient({ uri: uri + "/graphql", cache });
 
 const theme = createMuiTheme({
   typography: {

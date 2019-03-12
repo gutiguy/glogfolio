@@ -1,4 +1,4 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer } = require("apollo-server-express");
 const { GraphQLError } = require("graphql/error");
 const schema = require("./schema");
 
