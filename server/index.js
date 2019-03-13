@@ -5,8 +5,8 @@ const express = require("express");
 const app = express();
 const flash = require("connect-flash");
 const session = require("express-session");
-const { PORT, SESSION_SECRET } = process.env;
-
+const { PORT, SESSION_SECRET, CLIENT_URL } = process.env;
+const cors = require("cors");
 const knex = require("./db/knex");
 
 // Connect Objection models to the database using knex.
@@ -20,6 +20,12 @@ app.use(
   session({ secret: SESSION_SECRET, saveUninitialized: false, resave: true })
 );
 app.use(flash());
+
+if (typeof CLIENT_URL === "string" && CLIENT_URL !== "") {
+  app.use(cors({ origin: CLIENT_URL }));
+} else {
+  app.use(cors());
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
