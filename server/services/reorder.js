@@ -33,8 +33,6 @@ injectOrder = async (table, order_column, step = 100000, suborder) => {
       ') UPDATE :table: SET :order_column:=:temp_table:."new_order" FROM :temp_table: WHERE :table:."id"=:temp_table:."id"',
     { temp_table, table, suborder_query, order_column, step }
   );
-
-  console.log("Inject order: ", request);
 };
 
 // Spread order values around for when pathological reordering patterns emerge
