@@ -1,11 +1,10 @@
 import axios from "axios";
 import { VERIFY_ADMIN } from "./types";
-
-const { REACT_APP_BACKEND_URL } = process.env;
+import { backendUrl } from "../config";
 
 export const verifyAdmin = () => async dispatch => {
   const res = await axios
-    .get(REACT_APP_BACKEND_URL + "/api/current_user")
+    .get(backendUrl + "/api/current_user")
     .catch(err => console.log(err));
 
   let username = null;

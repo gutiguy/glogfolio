@@ -10,8 +10,7 @@ import * as actions from "../../../actions/categoryActions";
 import Grid from "@material-ui/core/Grid";
 import SelectedImage from "../SelectedImage";
 import fetchImages from "../../../utils/fetchImages";
-
-const { REACT_APP_BACKEND_URL } = process.env;
+import { backendUrl } from "../../../config";
 
 class APortfolio extends Component {
   state = {
@@ -56,12 +55,9 @@ class APortfolio extends Component {
   };
 
   handleDelete = async () => {
-    const request = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/artworks/delete",
-      {
-        selectedImages: this.state.selectedImages
-      }
-    );
+    const request = await axios.post(backendUrl + "/api/artworks/delete", {
+      selectedImages: this.state.selectedImages
+    });
     let newImages = [...this.state.images];
     let newImagesIndexes = newImages.map(image => image.id);
     let currentImages = [...this.state.currentImages];
@@ -91,19 +87,14 @@ class APortfolio extends Component {
   };
 
   handleAdd = async (values, image, _) => {
-    const request = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/artworks/add",
-      {
-        ...values,
-        width: image.width,
-        height: image.height
-      }
-    );
+    const request = await axios.post(backendUrl + "/api/artworks/add", {
+      ...values,
+      width: image.width,
+      height: image.height
+    });
 
     const uploadConfig = await axios.get(
-      REACT_APP_BACKEND_URL +
-        "/api/upload?folder=portfolio&key=" +
-        request.data.key
+      backendUrl + "/api/upload?folder=portfolio&key=" + request.data.key
     );
     await axios.put(uploadConfig.data.url, image.file, {
       headers: { "Content-Type": image.type }
@@ -113,15 +104,12 @@ class APortfolio extends Component {
   };
 
   handleEdit = async ({ id, name, description, selectedCategories }) => {
-    const request = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/artworks/edit",
-      {
-        id,
-        name,
-        description,
-        selectedCategories
-      }
-    );
+    const request = await axios.post(backendUrl + "/api/artworks/edit", {
+      id,
+      name,
+      description,
+      selectedCategories
+    });
     if (request.status === 200) {
       console.log("Edited successfully");
     } else {

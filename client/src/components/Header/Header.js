@@ -13,9 +13,7 @@ import axios from "axios";
 import { FETCH_NAVIGATIONS_FOR_INTERFACE } from "../../graphql/navigation";
 import { graphql } from "react-apollo";
 import * as actions from "../../actions/adminActions";
-import config from "../../config.js";
-
-const { REACT_APP_BACKEND_URL } = process.env;
+import config, { backendUrl } from "../../config.js";
 
 const styles = theme => ({
   root: {
@@ -72,7 +70,7 @@ class Header extends React.Component {
   };
 
   handleLogOut = async () => {
-    const res = await axios.post(REACT_APP_BACKEND_URL + "/api/logout");
+    const res = await axios.post(backendUrl + "/api/logout");
     if (res) {
       this.props.verifyAdmin();
     } else {

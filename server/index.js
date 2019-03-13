@@ -5,7 +5,7 @@ const express = require("express");
 const app = express();
 const flash = require("connect-flash");
 const session = require("express-session");
-const { PORT, APOLLO_PORT, SESSION_SECRET } = process.env;
+const { PORT, SESSION_SECRET } = process.env;
 
 const knex = require("./db/knex");
 

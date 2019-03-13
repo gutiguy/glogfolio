@@ -3,8 +3,7 @@ import axios from "axios";
 import ATable, { injectButtons } from "../ATable";
 import AToolbar from "../AToolbar";
 import ACarouselForm from "./ACarouselForm";
-
-const { REACT_APP_BACKEND_URL } = process.env;
+import { backendUrl } from "../../../config";
 
 class ACarousel extends Component {
   constructor(props) {
@@ -19,7 +18,7 @@ class ACarousel extends Component {
   }
 
   async componentDidMount() {
-    const nodes = await axios.get(REACT_APP_BACKEND_URL + "/api/carousels");
+    const nodes = await axios.get(backendUrl + "/api/carousels");
 
     if (nodes.status !== 200) {
       console.log(
@@ -39,7 +38,7 @@ class ACarousel extends Component {
       formData.append(key, value);
     }
     const response = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/carousels/add",
+      backendUrl + "/api/carousels/add",
       formData
     );
     const newCarousel = {
@@ -56,15 +55,12 @@ class ACarousel extends Component {
 
   submitEdit = async node => {
     const { id, url, title, description } = node;
-    const req = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/carousels/edit",
-      {
-        title,
-        description,
-        id,
-        url
-      }
-    );
+    const req = await axios.post(backendUrl + "/api/carousels/edit", {
+      title,
+      description,
+      id,
+      url
+    });
     if (req.status === 200) {
       const { nodes } = this.state;
       let index = nodes.map(el => el.id).indexOf(node.id);
@@ -101,13 +97,10 @@ class ACarousel extends Component {
     }
 
     // If moved to
-    const req = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/carousels/reorder",
-      {
-        putAfter,
-        currentId
-      }
-    );
+    const req = await axios.post(backendUrl + "/api/carousels/reorder", {
+      putAfter,
+      currentId
+    });
     if (req.status === 200) {
       const movedNode = nodes[oldIndex];
       let reorderedNodes = [...nodes];
@@ -133,7 +126,7 @@ class ACarousel extends Component {
   handleDelete = async ids => {
     const { selectedNodes, nodes } = this.state;
     const deleteCarousels = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/carousels/delete",
+      backendUrl + "/api/carousels/delete",
       {
         selectedNodes
       }

@@ -12,8 +12,7 @@ import AToolbar from "../AToolbar";
 import ACategoriesForm from "./ACategoriesForm";
 import Edit from "@material-ui/icons/Edit";
 import Add from "@material-ui/icons/Add";
-
-const { REACT_APP_BACKEND_URL } = process.env;
+import { backendUrl } from "../../../config";
 
 class ACategories extends Component {
   constructor(props) {
@@ -53,13 +52,10 @@ class ACategories extends Component {
   };
 
   handleAdd = async values => {
-    const request = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/categories/add",
-      {
-        parent_id: this.state.underParent.id,
-        ...values
-      }
-    );
+    const request = await axios.post(backendUrl + "/api/categories/add", {
+      parent_id: this.state.underParent.id,
+      ...values
+    });
     if (request.status === 200) {
       this.setState({
         addForm: false,
@@ -78,7 +74,7 @@ class ACategories extends Component {
     };
 
     const editedCategory = await axios.patch(
-      REACT_APP_BACKEND_URL + "/api/categories",
+      backendUrl + "/api/categories",
       newCategory
     );
     if (editedCategory.status === 200) {
@@ -91,7 +87,7 @@ class ACategories extends Component {
   };
 
   handleDelete = async () => {
-    await axios.post(REACT_APP_BACKEND_URL + "/api/categories/delete", {
+    await axios.post(backendUrl + "/api/categories/delete", {
       ids: this.state.selectedNodes
     });
     await this.props.loadCategories();
@@ -119,7 +115,7 @@ class ACategories extends Component {
         putAfter = treeData[levelIndex - 1].id;
       }
     }
-    await axios.post(REACT_APP_BACKEND_URL + "/api/categories/reorder", {
+    await axios.post(backendUrl + "/api/categories/reorder", {
       currentId: node.id,
       parent_id: parent_id,
       putAfter: putAfter

@@ -9,8 +9,7 @@ import { connect } from "react-redux";
 import ValidatePasswordForm from "./ValidatePasswordForm";
 import axios from "axios";
 import CustomDialog from "../CustomDialog";
-
-const { REACT_APP_BACKEND_URL } = process.env;
+import { backendUrl } from "../../../config";
 
 class LoginDetailsForm extends Component {
   constructor(props) {
@@ -42,7 +41,7 @@ class LoginDetailsForm extends Component {
     }
 
     const res = await axios.post(
-      REACT_APP_BACKEND_URL + "/api/admin/change_info",
+      backendUrl + "/api/admin/change_info",
       changeObject
     );
     this.setState({ ...this.initialState, requestStatus: res.status });
