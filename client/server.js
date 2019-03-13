@@ -7,8 +7,18 @@ const port = process.env.PORT || 8080;
 const app = express();
 require("dotenv").config();
 
+const whitelist = [
+  process.env.REACT_APP_BACKEND_URL,
+  process.env.REACT_APP_AWS_BUCKET_URI
+];
 const corsOptions = {
-  origin: process.env.REACT_APP_BACKEND_URL,
+  origin: function(origin, cb) {
+    if (whitelist.indexOf(origin) !== -1) {
+      cb(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   optionSuccessStatus: 200
 };
 
