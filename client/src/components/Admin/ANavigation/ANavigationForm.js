@@ -75,13 +75,19 @@ class ANavigationForm extends Component {
                   label="Page"
                   name="pageId"
                   value={values.page.id}
-                  onChange={e =>
+                  onChange={e => {
+                    let perma = "";
+                    let findPage = pages.find(
+                      page => page.id === e.target.value
+                    );
+                    if (findPage) {
+                      perma = findPage.perma;
+                    }
                     setFieldValue("page", {
                       id: e.target.value,
-                      perma: pages.find(page => page.id === e.target.value)
-                        .perma
-                    })
-                  }
+                      perma
+                    });
+                  }}
                 />
               )}
               <FormElement
